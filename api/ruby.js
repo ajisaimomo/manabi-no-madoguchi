@@ -59,7 +59,7 @@ export default async function handler(req, res) {
         if (!tokenizer) {
             tokenizer = await new Promise((resolve, reject) => {
                 kuromoji.builder({ 
-                    dicPath: 'node_modules/kuromoji/dict/' 
+                    dicPath: '/public/dict/' 
                 }).build((err, _tokenizer) => {
                     if (err) reject(err);
                     else resolve(_tokenizer);

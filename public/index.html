@@ -291,8 +291,14 @@
                 <ruby>単語<rt>たんご</rt></ruby>の<ruby>意味<rt>いみ</rt></ruby><ruby>調<rt>しら</rt></ruby>べ（2つの<ruby>方法<rt>ほうほう</rt></ruby>）
             </h2>
             <input type="text" id="dictInput" placeholder="意味を知りたい単語を入力してください（例：人工知能、十二単など）" style="width: 100%; margin-bottom: 15px;">
-            <div class="button-group">
-                <button class="btn" onclick="searchWeblio()" title="Weblio辞書で調べる">
+<div class="button-group">
+    <button class="btn btn-voice" onclick="startVoiceDict()" id="voiceDictBtn" title="音声入力">
+        <ruby>🎤<rt></rt></ruby> <ruby>音<rt>おん</rt></ruby><ruby>声<rt>せい</rt></ruby><ruby>入<rt>にゅう</rt></ruby><ruby>力<rt>りょく</rt></ruby>
+    </button>
+    <button class="btn" onclick="searchWeblio()">
+        <ruby>📚<rt></rt></ruby> <ruby>W<rt></rt></ruby><ruby>e<rt></rt></ruby><ruby>b<rt></rt></ruby><ruby>l<rt></rt></ruby><ruby>i<rt></rt></ruby><ruby>o<rt></rt></ruby><ruby>辞<rt>じ</rt></ruby><ruby>書<rt>しょ</rt></ruby>
+    </button>            
+<button class="btn" onclick="searchWeblio()" title="Weblio辞書で調べる">
                     <ruby>📚<rt></rt></ruby> <ruby>W<rt></rt></ruby><ruby>e<rt></rt></ruby><ruby>b<rt></rt></ruby><ruby>l<rt></rt></ruby><ruby>i<rt></rt></ruby><ruby>o<rt></rt></ruby><ruby>辞<rt>じ</rt></ruby><ruby>書<rt>しょ</rt></ruby>
                 </button>
                 <button class="btn btn-secondary" onclick="searchGakken()" title="学研キッズ辞書で調べる">

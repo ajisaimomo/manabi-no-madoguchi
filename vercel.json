@@ -1,9 +1,22 @@
 {
   "version": 2,
-  "builds": [
+  "functions": {
+    "api/ruby.js": {
+      "maxDuration": 10
+    }
+  },
+  "routes": [
     {
-      "src": "api/*.js",
-      "use": "@vercel/node"
+      "src": "/api/(.*)",
+      "dest": "/api/$1"
+    },
+    {
+      "src": "/",
+      "dest": "/public/index.html"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/public/$1"
     }
   ]
 }

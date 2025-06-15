@@ -1,0 +1,19 @@
+{
+  "name": "manabi-no-madoguchi",
+  "version": "1.0.0",
+  "description": "ディスレクシア支援サイト - Google検索 + 辞書 + ルビ振り",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "express-rate-limit": "^7.5.0",
+    "helmet": "^8.1.0",
+    "kuromoji": "^0.1.2"
+  }
+}

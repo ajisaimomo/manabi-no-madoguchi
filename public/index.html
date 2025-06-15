@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>まなびの窓口 📚✨</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'BIZ UDPゴシック', 'Yu Gothic UI', 'Meiryo UI', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        h1 {
+            text-align: center;
+            color: #5a67d8;
+            font-size: 2.8em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 1.2em;
+            margin-bottom: 40px;
+        }
+        
+        .section {
+            margin-bottom: 50px;
+            padding: 30px;
+            border-radius: 15px;
+            background: linear-gradient(145deg, #f8f9ff 0%, #e8f4f8 100%);
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+        
+        .section:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        
+        .section-title {
+            font-size: 1.5em;
+            color: #4a5568;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .input-group input[type="text"] {
+            flex: 1;
+        }
+        
+        input[type="text"], textarea {
+            flex: 1;
+            padding: 20px;
+            font-size: 18px;
+            line-height: 1.8 !important;
+            border: 2px solid #cbd5e0;
+            border-radius: 10px;
+            resize: vertical;
+            transition: border-color 0.3s ease;
+            font-family: inherit;
+            min-height: 150px;
+        }
+        
+        input[type="text"]:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 200px;
+            line-height: 1.6;
+        }
+        
+        .btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+            line-height: 1.8 !important;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn:disabled {
+            background: #a0aec0;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(45deg, #48bb78, #38a169);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(45deg, #fc8181, #f56565);
+        }
+        
+        .btn-copy {
+            background: linear-gradient(45deg, #ed8936, #dd6b20);
+        }
+        
+        .btn-voice {
+            background: linear-gradient(45deg, #9f7aea, #805ad5);
+            min-width: 50px;
+            justify-content: center;
+        }
+        
+        /* ボタン内ルビの統一スタイル（①の実装） */
+        .btn ruby {
+            ruby-align: start;
+            ruby-position: over;
+        }
+        
+        .btn ruby rt {
+            font-size: 0.6em !important;
+            color: white !important;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+            line-height: 1.2;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+        
+        /* 全体のルビ統一設定（文字ずれ解消） */
+        body, .container, .section, .section-title, .result-box {
+            line-height: 2.0 !important;
+        }
+        
+        /* すべてのrubyタグ統一 */
+        ruby {
+            ruby-align: start;
+            ruby-position: over;
+            display: inline-ruby;
+        }
+        
+        ruby rt {
+            font-size: 0.5em;
+            color: #666;
+            line-height: 1.0;
+            font-weight: normal;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .result-box {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 15px;
+            min-height: 80px;
+            font-size: 18px;
+            line-height: 2.4 !important;
+            display: none;
+        }
+        
+        .result-success {
+            border-color: #68d391;
+            background: linear-gradient(145deg, #f0fff4 0%, #c6f6d5 100%);
+        }
+        
+        .result-error {
+            border-color: #fc8181;
+            background: linear-gradient(145deg, #fffafa 0%, #fed7d7 100%);
+            color: #c53030;
+        }
+        
+        .result-loading {
+            border-color: #b794f6;
+            background: linear-gradient(145deg, #faf5ff 0%, #e9d8fd 100%);
+            color: #553c9a;
+        }
+        
+        .stats {
+            background: #edf2f7;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 13px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .copy-success {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #48bb78;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            font-weight: bold;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            animation: copyNotification 4s ease-out;
+        }
+        
+        @keyframes copyNotification {
+            0% { opacity: 0; transform: translateX(100px); }
+            10% { opacity: 1; transform: translateX(0); }
+            90% { opacity: 1; transform: translateX(0); }
+            100% { opacity: 0; transform: translateX(100px); }
+        }
+        
+        @media (max-width: 768px) {
+            .container { padding: 20px; margin: 10px; }
+            h1 { font-size: 2.2em; }
+            .input-group { flex-direction: column; }
+            .btn { justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>まなびの窓口 📚✨</h1>
+        <p class="subtitle">Google<ruby>検索<rt>けんさく</rt></ruby> + <ruby>辞書<rt>じしょ</rt></ruby> + ルビ<ruby>振<rt>ふ</rt></ruby>りが1つのサイトで<ruby>完結<rt>かんけつ</rt></ruby></p>
+        
+        <!-- 1. Google検索セクション -->
+        <div class="section">
+            <h2 class="section-title">
+                <span>🔍</span>
+                Google<ruby>検索<rt>けんさく</rt></ruby>（<ruby>音声<rt>おんせい</rt></ruby><ruby>入力<rt>にゅうりょく</rt></ruby><ruby>対応<rt>たいおう</rt></ruby>）
+            </h2>
+            <input type="text" id="searchInput" placeholder="調べたいことを入力してください（例：人工知能、歴史、科学など）" style="width: 100%; margin-bottom: 15px;">
+            <div class="button-group">
+                <button class="btn btn-voice" onclick="startVoiceSearch()" id="voiceBtn" title="音声入力">
+                    <ruby>🎤<rt></rt></ruby> <ruby>音<rt>おん</rt></ruby><ruby>声<rt>せい</rt></ruby><ruby>入<rt>にゅう</rt></ruby><ruby>力<rt>りょく</rt></ruby>
+                </button>
+                <button class="btn" onclick="googleSearch()">
+                    <ruby>🔍<rt></rt></ruby> <ruby>検<rt>けん</rt></ruby><ruby>索<rt>さく</rt></ruby>
+                </button>
+            </div>
+            <p style="font-size: 14px; color: #666; margin-top: 10px;">
+                💡 <ruby>検索<rt>けんさく</rt></ruby><ruby>結果<rt>けっか</rt></ruby>は<ruby>新<rt>あたら</rt></ruby>しいタブで<ruby>開<rt>ひら</rt></ruby>きます。<ruby>結果<rt>けっか</rt></ruby>をコピーして<ruby>下<rt>した</rt></ruby>の「ルビ<ruby>振<rt>ふ</rt></ruby>り」で<ruby>使<rt>つか</rt></ruby>えます。
+            </p>
+        </div>
+        
+        <!-- 2. 辞書セクション -->
+        <div class="section">
+            <h2 class="section-title">
+                <span>📖</span>
+                <ruby>単語<rt>たんご</rt></ruby>の<ruby>意味<rt>いみ</rt></ruby><ruby>調<rt>しら</rt></ruby>べ（2つの<ruby>方法<rt>ほうほう</rt></ruby>）
+            </h2>
+            <input type="text" id="dictInput" placeholder="意味を知りたい単語を入力してください（例：人工知能、十二単など）" style="width: 100%; margin-bottom: 15px;">
+            <div class="button-group">
+                <button class="btn" onclick="searchWeblio()" title="Weblio辞書で調べる">
+                    <ruby>📚<rt></rt></ruby> <ruby>W<rt></rt></ruby><ruby>e<rt></rt></ruby><ruby>b<rt></rt></ruby><ruby>l<rt></rt></ruby><ruby>i<rt></rt></ruby><ruby>o<rt></rt></ruby><ruby>辞<rt>じ</rt></ruby><ruby>書<rt>しょ</rt></ruby>
+                </button>
+                <button class="btn btn-secondary" onclick="searchGakken()" title="学研キッズ辞書で調べる">
+                    <ruby>🏫<rt></rt></ruby> <ruby>学<rt>がく</rt></ruby><ruby>研<rt>けん</rt></ruby><ruby>辞<rt>じ</rt></ruby><ruby>書<rt>しょ</rt></ruby>
+                </button>
+                <button class="btn btn-danger" onclick="clearDict()">
+                    <ruby>🗑️<rt></rt></ruby> <ruby>消<rt>しょう</rt></ruby><ruby>去<rt>きょ</rt></ruby>
+                </button>
+            </div>
+            <div id="dictResult" class="result-box"></div>
+            <p style="font-size: 14px; color: #666; margin-top: 10px;">
+                💡 <strong><ruby>Weblio<rt>ウェブリオ</rt></ruby><ruby>辞書<rt>じしょ</rt></ruby></strong>：<ruby>詳<rt>くわ</rt></ruby>しい<ruby>説明<rt>せつめい</rt></ruby>が<ruby>見<rt>み</rt></ruby>つかります（<ruby>新<rt>あたら</rt></ruby>しいタブで<ruby>開<rt>ひら</rt></ruby>きます）<br>
+                💡 <strong><ruby>学研<rt>がくけん</rt></ruby><ruby>辞書<rt>じしょ</rt></ruby></strong>：<ruby>子<rt>こ</rt></ruby>ども<ruby>向<rt>む</rt></ruby>けの<ruby>やさしい<rt>やさしい</rt></ruby><ruby>説明<rt>せつめい</rt></ruby>（<ruby>新<rt>あたら</rt></ruby>しいタブで<ruby>開<rt>ひら</rt></ruby>きます）
+            </p>
+        </div>
+        
+        <!-- 3. ルビ振りセクション -->
+        <div class="section">
+            <h2 class="section-title">
+                <span>✨</span>
+                <ruby>文章<rt>ぶんしょう</rt></ruby>にルビ<ruby>振<rt>ふ</rt></ruby>り（Word<ruby>貼<rt>は</rt></ruby>り<ruby>付<rt>つ</rt></ruby>け<ruby>対応<rt>たいおう</rt></ruby>）
+            </h2>
+            <textarea id="rubyInput" rows="8" placeholder="ここに文章をコピー＆ペーストしてください。Google検索の結果、ニュース記事、教科書の内容、論文の一部など、どんな文章でも大丈夫です。最大2000文字まで処理できます。" style="width: 100%; min-height: 200px; resize: vertical; margin-bottom: 15px;"></textarea>
+            <div class="button-group">
+                <button class="btn" onclick="addRuby()" id="rubyBtn">
+                    <ruby>✨<rt></rt></ruby> <ruby>ル<rt></rt></ruby><ruby>ビ<rt></rt></ruby><ruby>を<rt></rt></ruby><ruby>付<rt>つ</rt></ruby><ruby>け<rt></rt></ruby><ruby>る<rt></rt></ruby>
+                </button>
+                <button class="btn btn-danger" onclick="clearRuby()">
+                    <ruby>🗑️<rt></rt></ruby> <ruby>消<rt>しょう</rt></ruby><ruby>去<rt>きょ</rt></ruby>
+                </button>
+                <button class="btn btn-copy" onclick="copyResult()" id="copyBtn" style="display: none;">
+                    <ruby>📋<rt></rt></ruby> <ruby>結<rt>けっ</rt></ruby><ruby>果<rt>か</rt></ruby><ruby>を<rt></rt></ruby><ruby>コ<rt></rt></ruby><ruby>ピ<rt></rt></ruby><ruby>ー<rt></rt></ruby>
+                </button>
+                <button class="btn btn-secondary" onclick="speakRubyResult()" id="speakBtn" style="display: none;">
+                    <ruby>🔊<rt></rt></ruby> <ruby>読<rt>よ</rt></ruby><ruby>み<rt></rt></ruby><ruby>上<rt>あ</rt></ruby><ruby>げ<rt></rt></ruby>
+                </button>
+                <button class="btn btn-danger" onclick="stopSpeaking()" id="stopBtn" style="display: none;">
+                    <ruby>⏹️<rt></rt></ruby> <ruby>停<rt>てい</rt></ruby><ruby>止<rt>し</rt></ruby>
+                </button>
+            </div>
+            <div id="rubyResult" class="result-box"></div>
+        </div>
+    </div>
+
+    <!-- サイト説明 -->
+    <div style="margin-top: 60px; padding: 20px; text-align: center; color: #555; font-size: 12px; border-top: 1px solid #e2e8f0;">
+        <p style="margin: 0; line-height: 1.6;">
+            このサイトは、色々な事情で検索したり、その結果を読むことに課題がある方のために作りました。<br>
+            できるだけ多くの人たちが、自分の知りたいことにアクセスできることが願いです。
+        </p>
+    </div>
+
+    <script>
+        let currentRubyResult = '';
+        let currentDictResult = '';
+        
+        // 音声認識のグローバル管理（②の実装）
+        let recognition = null;
+        let isRecognizing = false;
+        
+        // 🎯 環境に応じたAPI URL設定（ローカル/Vercel自動判定）
+        const API_BASE = window.location.hostname === 'localhost' 
+            ? 'http://localhost:3000'
+            : window.location.origin;
+        
+        console.log(`🌐 API Base URL: ${API_BASE}`);
+        
+        // 音声認識の初期化
+        function initVoiceRecognition() {
+            if (!recognition) {
+                // ブラウザ対応チェック
+                if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                    return false;
+                }
+                
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                recognition = new SpeechRecognition();
+                
+                recognition.lang = 'ja-JP';
+                recognition.continuous = false;
+                recognition.interimResults = false;
+                
+                // イベントハンドラーを一度だけ設定
+                recognition.onstart = () => {
+                    console.log('🎤 音声認識開始');
+                    isRecognizing = true;
+                    const voiceBtn = document.getElementById('voiceBtn');
+                    voiceBtn.style.background = 'linear-gradient(45deg, #fc8181, #f56565)';
+                    voiceBtn.innerHTML = '<ruby>🔴<rt></rt></ruby> <ruby>認<rt>にん</rt></ruby><ruby>識<rt>しき</rt></ruby><ruby>中<rt>ちゅう</rt></ruby>';
+                };
+                
+                recognition.onresult = (event) => {
+                    const result = event.results[0][0].transcript;
+                    document.getElementById('searchInput').value = result;
+                    console.log(`🎤 音声認識結果: "${result}"`);
+                    
+                    // 成功通知
+                    showNotification(`🎤 音声認識成功: "${result}"`, 'success');
+                };
+                
+                recognition.onend = () => {
+                    console.log('🎤 音声認識終了');
+                    isRecognizing = false;
+                    resetVoiceButton();
+                };
+                
+                recognition.onerror = (event) => {
+                    console.error('音声認識エラー:', event.error);
+                    isRecognizing = false;
+                    resetVoiceButton();
+                    
+                    let errorMessage = '';
+                    switch(event.error) {
+                        case 'not-allowed':
+                            errorMessage = '🎤 マイクへのアクセスが拒否されました\n\nブラウザのアドレスバー左側のマイクアイコンをクリックして「許可」を選択してください';
+                            break;
+                        case 'no-speech':
+                            errorMessage = '🎤 音声が検出されませんでした。もう一度お試しください。';
+                            break;
+                        case 'network':
+                            errorMessage = '🎤 ネットワークエラーが発生しました。インターネット接続を確認してください。';
+                            break;
+                        default:
+                            errorMessage = `🎤 音声認識エラー: ${event.error}`;
+                    }
+                    
+                    alert(errorMessage);
+                };
+            }
+            return true;
+        }
+        
+        // ボタンのリセット
+        function resetVoiceButton() {
+            const voiceBtn = document.getElementById('voiceBtn');
+            voiceBtn.style.background = 'linear-gradient(45deg, #9f7aea, #805ad5)';
+            voiceBtn.innerHTML = '<ruby>🎤<rt></rt></ruby> <ruby>音<rt>おん</rt></ruby><ruby>声<rt>せい</rt></ruby><ruby>入<rt>にゅう</rt></ruby><ruby>力<rt>りょく</rt></ruby>';
+        }
+        
+        // 通知表示
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            const bgColor = type === 'success' ? '#48bb78' : type === 'error' ? '#f56565' : '#4299e1';
+            
+            notification.style.cssText = `
+                position: fixed; top: 20px; right: 20px; z-index: 9999;
+                background: ${bgColor}; color: white; padding: 15px 20px;
+                border-radius: 10px; font-weight: bold;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                max-width: 300px; word-wrap: break-word;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                if (document.body.contains(notification)) {
+                    document.body.removeChild(notification);
+                }
+            }, 3000);
+        }
+        
+        // 1. Google検索機能
+        function googleSearch() {
+            const query = document.getElementById('searchInput').value.trim();
+            if (!query) {
+                alert('検索したい内容を入力してください');
+                return;
+            }
+            
+            const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+            window.open(searchUrl, '_blank');
+            console.log(`🔍 Google検索: "${query}"`);
+        }
+        
+        // 音声入力機能（改良版 - グローバルrecognition使用）
+        function startVoiceSearch() {
+            if (!initVoiceRecognition()) {
+                alert('❌ お使いのブラウザは音声認識に対応していません\n\n対応ブラウザ:\n・Google Chrome\n・Microsoft Edge\n・Safari（一部）');
+                return;
+            }
+            
+            try {
+                if (isRecognizing) {
+                    // 認識中の場合は停止
+                    recognition.stop();
+                } else {
+                    // 安全な開始のため、前の状態をクリア
+                    if (recognition.state !== 'inactive') {
+                        recognition.abort();
+                        setTimeout(() => {
+                            recognition.start();
+                        }, 100);
+                    } else {
+                        recognition.start();
+                    }
+                }
+            } catch (error) {
+                console.error('音声認識開始エラー:', error);
+                isRecognizing = false;
+                resetVoiceButton();
+                alert('🎤 音声認識を開始できませんでした。ブラウザがマイクアクセスをブロックしている可能性があります。');
+            }
+        }
+        
+        // Weblio辞書で検索
+        function searchWeblio() {
+            const word = document.getElementById('dictInput').value.trim();
+            if (!word) {
+                alert('調べたい単語を入力してください');
+                return;
+            }
+            
+            // Weblio辞書の検索URL
+            const weblioUrl = `https://www.weblio.jp/content_find?query=${encodeURIComponent(word)}&searchType=exact`;
+            window.open(weblioUrl, '_blank');
+            
+            // 小学生向けわかりやすい説明
+            const resultDiv = document.getElementById('dictResult');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result-box result-success';
+            resultDiv.innerHTML = `
+                <div style="padding: 20px;">
+                    <div style="font-size: 1.3em; margin-bottom: 20px; color: #2d3748;">
+                        📚 <ruby>Weblio<rt>ウェブリオ</rt></ruby><ruby>辞書<rt>じしょ</rt></ruby>で「${word}」を<ruby>調<rt>しら</rt></ruby>べています
+                    </div>
+                    <div style="background: #e6fffa; padding: 20px; border-radius: 10px; border: 2px solid #4fd1c7; margin-bottom: 20px;">
+                        <div style="font-size: 1.1em; font-weight: bold; color: #0d9488; margin-bottom: 15px;">
+                            ✅ <ruby>新<rt>あたら</rt></ruby>しいタブが<ruby>開<rt>ひら</rt></ruby>きました！
+                        </div>
+                        <div style="font-size: 16px; line-height: 2.2; color: #0f766e;">
+                            <ruby>辞書<rt>じしょ</rt></ruby>の<ruby>画面<rt>がめん</rt></ruby>で「${word}」の<ruby>意味<rt>いみ</rt></ruby>を<ruby>見<rt>み</rt></ruby>つけてください。<br>
+                            <ruby>意味<rt>いみ</rt></ruby>が<ruby>書<rt>か</rt></ruby>いてある<ruby>部分<rt>ぶぶん</rt></ruby>を<ruby>選<rt>えら</rt></ruby>んで、コピーしてください。
+                        </div>
+                    </div>
+                    <div style="background: #fef3c7; padding: 20px; border-radius: 10px; border: 2px solid #f59e0b;">
+                        <div style="font-size: 1.1em; font-weight: bold; color: #92400e; margin-bottom: 15px;">
+                            🎯 <ruby>次<rt>つぎ</rt></ruby>にやること
+                        </div>
+                        <div style="font-size: 16px; line-height: 2.0; color: #78350f;">
+                            <strong>1.</strong> <ruby>辞書<rt>じしょ</rt></ruby>の<ruby>画面<rt>がめん</rt></ruby>で<ruby>意味<rt>いみ</rt></ruby>をコピー<br>
+                            <strong>2.</strong> <ruby>下<rt>した</rt></ruby>の「ルビ<ruby>振<rt>ふ</rt></ruby>り」の<ruby>箱<rt>はこ</rt></ruby>に<ruby>貼<rt>は</rt></ruby>り<ruby>付<rt>つ</rt></ruby>け<br>
+                            <strong>3.</strong> 「ルビを<ruby>付<rt>つ</rt></ruby>ける」ボタンを<ruby>押<rt>お</rt></ruby>す
+                        </div>
+                    </div>
+                    <div style="margin-top: 15px; font-size: 14px; color: #666; background: #f0f9ff; padding: 15px; border-radius: 8px;">
+                        💡 <ruby>難<rt>むずか</rt></ruby>しい<ruby>漢字<rt>かんじ</rt></ruby>にルビが<ruby>付<rt>つ</rt></ruby>いて、<ruby>読<rt>よ</rt></ruby>みやすくなります！
+                    </div>
+                </div>
+            `;
+            
+            console.log(`📚 Weblio辞書検索: "${word}"`);
+        }
+        
+        // 学研キッズ辞書で検索（修正版 - 正しいURL使用）
+        function searchGakken() {
+            const word = document.getElementById('dictInput').value.trim();
+            if (!word) {
+                alert('調べたい単語を入力してください');
+                return;
+            }
+            
+            // HTMLから判明した正しい検索URL
+            const gakkenUrl = `https://kids.gakken.co.jp/jiten/result/?s=${encodeURIComponent(word)}`;
+            window.open(gakkenUrl, '_blank');
+            
+            // 結果表示
+            const resultDiv = document.getElementById('dictResult');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result-box result-success';
+            resultDiv.innerHTML = `
+                <div style="padding: 20px;">
+                    <div style="font-size: 1.2em; margin-bottom: 15px; color: #2d3748;">
+                        🏫 学研キッズ辞書で「${word}」を検索中...
+                    </div>
+                    <div style="background: #e6fffa; padding: 15px; border-radius: 8px; border: 1px solid #4fd1c7;">
+                        <strong>✅ 検索が開始されました！</strong><br>
+                        新しいタブで学研キッズ辞書の検索結果が表示されます。<br>
+                        子ども向けの分かりやすい説明が見つかります。
+                    </div>
+                    <div style="margin-top: 15px; font-size: 14px; color: #666;">
+                        💡 検索結果が表示されない場合は、検索窓に「${word}」と再入力してください。
+                    </div>
+                </div>
+            `;
+            
+            console.log(`🏫 学研辞書で正しい検索URL使用: "${word}"`);
+        }
+        
+        // 辞書セクション消去
+        function clearDict() {
+            document.getElementById('dictInput').value = '';
+            document.getElementById('dictResult').style.display = 'none';
+            currentDictResult = '';
+            console.log('🗑️ 辞書セクション消去');
+        }
+        
+        // 🎯 ルビ振り機能（Vercel対応版 - 環境自動判定）
+        async function addRuby() {
+            const text = document.getElementById('rubyInput').value.trim();
+            if (!text) {
+                alert('ルビを振りたい文章を入力してください');
+                return;
+            }
+            
+            if (text.length > 2000) {
+                alert('文章が長すぎます。2000文字以内にしてください。');
+                return;
+            }
+            
+            const resultDiv = document.getElementById('rubyResult');
+            const rubyBtn = document.getElementById('rubyBtn');
+            const copyBtn = document.getElementById('copyBtn');
+            
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result-box result-loading';
+            resultDiv.innerHTML = `
+                <div style="text-align: center; padding: 20px;">
+                    <div style="font-size: 1.5em; margin-bottom: 10px;">⚡</div>
+                    <div>kuromoji.js でルビを振っています...</div>
+                    <div style="font-size: 14px; color: #666; margin-top: 5px;">
+                        ${API_BASE === window.location.origin ? 'Vercel' : 'ローカル'}サーバー接続を確認中...
+                    </div>
+                </div>
+            `;
+            rubyBtn.disabled = true;
+            copyBtn.style.display = 'none';
+            
+            try {
+                console.log(`🌐 API呼び出し: ${API_BASE}/api/ruby`);
+                
+                // サーバー接続確認
+                let response;
+                try {
+                    response = await fetch(`${API_BASE}/api/ruby`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ text: text })
+                    });
+                } catch (fetchError) {
+                    console.error('サーバー接続エラー:', fetchError);
+                    
+                    if (API_BASE === window.location.origin) {
+                        // Vercel環境での接続エラー
+                        throw new Error(`Vercelサーバーに接続できません。
+
+考えられる原因:
+1. Vercel Functionsがまだ初期化中です
+2. 一時的なネットワークエラーです
+3. API関数がデプロイされていません
+
+解決方法:
+・少し待ってから再度お試しください
+・ページを再読み込みしてください
+
+エラー詳細: ${fetchError.message}`);
+                    } else {
+                        // ローカル環境での接続エラー
+                        throw new Error(`ローカルサーバーに接続できません。
+
+解決方法:
+1. ターミナルで 'npm start' を実行
+2. サーバーが http://localhost:3000 で起動していることを確認
+3. ブラウザを再読み込み
+
+エラー詳細: ${fetchError.message}`);
+                    }
+                }
+                
+                if (!response.ok) {
+                    const errorText = await response.text().catch(() => 'レスポンス取得失敗');
+                    throw new Error(`サーバーエラー: ${response.status} ${response.statusText}\n詳細: ${errorText}`);
+                }
+                
+                let data;
+                try {
+                    data = await response.json();
+                } catch (jsonError) {
+                    throw new Error('サーバーからの応答が不正です。JSON解析に失敗しました。');
+                }
+                
+                if (data.success) {
+                    currentRubyResult = data.rubyText;
+                    
+                    resultDiv.className = 'result-box result-success';
+                    resultDiv.innerHTML = `
+                        <div style="font-weight: bold; margin-bottom: 15px; color: #2d3748;">
+                            ✨ ルビ振り完了！
+                        </div>
+                        <div style="padding: 20px; background: #fff; border-radius: 10px; border: 2px solid #e2e8f0; line-height: 2.2;">
+                            ${data.rubyText}
+                        </div>
+                        <div class="stats">
+                            📊 ${text.length}文字 → ${data.tokenCount}トークン処理完了 (${data.processingTime || 50}ms) | ${API_BASE === window.location.origin ? 'Vercel' : 'ローカル'}サーバー
+                        </div>
+                    `;
+                    
+                    copyBtn.style.display = 'flex';
+                    document.getElementById('speakBtn').style.display = 'flex';
+                    document.getElementById('stopBtn').style.display = 'flex';
+                    console.log(`✨ ルビ振り完了: ${data.tokenCount}トークン`);
+                } else {
+                    throw new Error(data.error || 'ルビ振り処理でエラーが発生しました');
+                }
+                
+            } catch (error) {
+                console.error('ルビ振りエラー:', error);
+                resultDiv.className = 'result-box result-error';
+                resultDiv.innerHTML = `
+                    <div style="padding: 20px;">
+                        <div style="font-size: 1.2em; margin-bottom: 15px; color: #c53030;">
+                            ❌ ルビ振りエラー
+                        </div>
+                        <div style="background: #fed7d7; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                            <strong>エラー内容:</strong><br>
+                            ${error.message}
+                        </div>
+                        <div style="background: #e6fffa; padding: 15px; border-radius: 8px;">
+                            <strong>💡 解決方法:</strong><br>
+                            ${API_BASE === window.location.origin 
+                                ? '・Vercelページを再読み込みしてください<br>・少し時間をおいて再度お試しください' 
+                                : '1. ターミナルで <code>npm start</code> を実行<br>2. サーバーが起動したらブラウザを再読み込み<br>3. この画面で「ルビを付ける」ボタンを再度押す'}
+                        </div>
+                    </div>
+                `;
+            } finally {
+                rubyBtn.disabled = false;
+            }
+        }
+        
+        // ルビセクション消去
+        function clearRuby() {
+            document.getElementById('rubyInput').value = '';
+            document.getElementById('rubyResult').style.display = 'none';
+            document.getElementById('copyBtn').style.display = 'none';
+            document.getElementById('speakBtn').style.display = 'none';
+            document.getElementById('stopBtn').style.display = 'none';
+            currentRubyResult = '';
+            
+            // 読み上げを停止
+            if ('speechSynthesis' in window) {
+                speechSynthesis.cancel();
+            }
+            
+            console.log('🗑️ ルビセクション消去');
+        }
+        
+        // ルビ振り結果の読み上げ機能
+        function speakRubyResult() {
+            if (!currentRubyResult) {
+                alert('読み上げる内容がありません');
+                return;
+            }
+            
+            if (!('speechSynthesis' in window)) {
+                alert('お使いのブラウザは音声読み上げに対応していません');
+                return;
+            }
+            
+            // HTMLタグを除去してテキストのみ抽出
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = currentRubyResult;
+            const textToSpeak = tempDiv.textContent || tempDiv.innerText || '';
+            
+            if (!textToSpeak.trim()) {
+                alert('読み上げる文章がありません');
+                return;
+            }
+            
+            // 既存の読み上げを停止
+            speechSynthesis.cancel();
+            
+            // 読み上げ設定
+            const utterance = new SpeechSynthesisUtterance(textToSpeak);
+            utterance.lang = 'ja-JP';
+            utterance.rate = 0.8;  // 少しゆっくり
+            utterance.pitch = 1.1; // 少し高めの声
+            utterance.volume = 0.9;
+            
+            // 読み上げ状態の表示
+            const speakBtn = document.getElementById('speakBtn');
+            const stopBtn = document.getElementById('stopBtn');
+            
+            utterance.onstart = () => {
+                speakBtn.style.background = 'linear-gradient(45deg, #fc8181, #f56565)';
+                speakBtn.innerHTML = '<ruby>🔊<rt></rt></ruby> <ruby>読<rt>よ</rt></ruby><ruby>み<rt></rt></ruby><ruby>上<rt>あ</rt></ruby><ruby>げ<rt></rt></ruby><ruby>中<rt>ちゅう</rt></ruby>';
+                stopBtn.style.display = 'flex';
+                console.log('🔊 読み上げ開始');
+                
+                // 読み上げ中の通知
+                showNotification('🔊 読み上げています...', 'info');
+            };
+            
+            utterance.onend = () => {
+                speakBtn.style.background = 'linear-gradient(45deg, #48bb78, #38a169)';
+                speakBtn.innerHTML = '<ruby>🔊<rt></rt></ruby> <ruby>読<rt>よ</rt></ruby><ruby>み<rt></rt></ruby><ruby>上<rt>あ</rt></ruby><ruby>げ<rt></rt></ruby>';
+                console.log('🔊 読み上げ完了');
+                
+                // 完了通知
+                showNotification('✅ 読み上げが完了しました', 'success');
+            };
+            
+            utterance.onerror = (event) => {
+                console.error('読み上げエラー:', event.error);
+                speakBtn.style.background = 'linear-gradient(45deg, #48bb78, #38a169)';
+                speakBtn.innerHTML = '<ruby>🔊<rt></rt></ruby> <ruby>読<rt>よ</rt></ruby><ruby>み<rt></rt></ruby><ruby>上<rt>あ</rt></ruby><ruby>げ<rt></rt></ruby>';
+                
+                showNotification('❌ 読み上げでエラーが発生しました', 'error');
+            };
+            
+            // 読み上げ開始
+            speechSynthesis.speak(utterance);
+        }
+        
+        // 読み上げ停止機能
+        function stopSpeaking() {
+            if ('speechSynthesis' in window) {
+                speechSynthesis.cancel();
+                
+                // ボタンの状態をリセット
+                const speakBtn = document.getElementById('speakBtn');
+                speakBtn.style.background = 'linear-gradient(45deg, #48bb78, #38a169)';
+                speakBtn.innerHTML = '<ruby>🔊<rt></rt></ruby> <ruby>読<rt>よ</rt></ruby><ruby>み<rt></rt></ruby><ruby>上<rt>あ</rt></ruby><ruby>げ<rt></rt></ruby>';
+                
+                console.log('⏹️ 読み上げ停止');
+                showNotification('⏹️ 読み上げを停止しました', 'info');
+            }
+        }
+        
+        // 結果をコピー（Word貼り付け対応・フォントサイズ調整版）
+        function copyResult() {
+            if (!currentRubyResult) {
+                alert('コピーする結果がありません');
+                return;
+            }
+            
+            try {
+                // Word用に最適化されたHTMLを生成（UDフォント + 文字16px、ルビ8px）
+                const optimizedHTML = `
+                    <div style="font-family: 'BIZ UDPゴシック', 'Yu Gothic UI', 'Meiryo UI', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', sans-serif; font-size: 16px; line-height: 2.2;">
+                        ${currentRubyResult.replace(/<ruby>/g, '<ruby style="font-size: 16px;">').replace(/<rt>/g, '<rt style="font-size: 8px; color: #666;">')}
+                    </div>
+                `;
+                
+                // プレーンテキスト版（ルビなし）
+                const plainText = currentRubyResult.replace(/<[^>]*>/g, '');
+                
+                // クリップボードAPIを使用（HTMLとテキスト両方をコピー）
+                if (navigator.clipboard && navigator.clipboard.write) {
+                    const clipboardItem = new ClipboardItem({
+                        'text/html': new Blob([optimizedHTML], { type: 'text/html' }),
+                        'text/plain': new Blob([plainText], { type: 'text/plain' })
+                    });
+                    
+                    navigator.clipboard.write([clipboardItem]).then(() => {
+                        showCopySuccess('Word最適化版');
+                        console.log('📋 Word最適化HTML + テキストをコピー完了');
+                    }).catch(err => {
+                        console.log('HTML+テキストコピー失敗、フォールバック実行');
+                        fallbackCopy();
+                    });
+                } else {
+                    // フォールバック: テキストのみコピー
+                    fallbackCopy();
+                }
+                
+            } catch (error) {
+                console.error('コピーエラー:', error);
+                alert('コピーに失敗しました');
+            }
+        }
+        
+        // フォールバック: テキストのみコピー
+        function fallbackCopy() {
+            const textArea = document.createElement('textarea');
+            textArea.value = currentRubyResult.replace(/<[^>]*>/g, ''); // HTMLタグを除去
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            showCopySuccess('テキスト版');
+            console.log('📋 テキストをコピー完了（フォールバック）');
+        }
+        
+        // コピー成功通知（詳細版）
+        function showCopySuccess(type) {
+            const notification = document.createElement('div');
+            notification.className = 'copy-success';
+            notification.innerHTML = `
+                <div style="font-weight: bold; margin-bottom: 5px;">📋 コピー完了！</div>
+                <div style="font-size: 13px;">
+                    ${type}をコピーしました<br>
+                    Wordに貼り付けると文字16px、ルビ8pxで表示されます
+                </div>
+            `;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                if (document.body.contains(notification)) {
+                    document.body.removeChild(notification);
+                }
+            }, 4000);
+        }
+        
+        // キーボードショートカット
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey || e.metaKey) {
+                switch (e.key) {
+                    case 'Enter':
+                        if (document.activeElement.id === 'searchInput') {
+                            e.preventDefault();
+                            googleSearch();
+                        } else if (document.activeElement.id === 'dictInput') {
+                            e.preventDefault();
+                            searchWeblio();
+                        } else if (document.activeElement.id === 'rubyInput') {
+                            e.preventDefault();
+                            addRuby();
+                        }
+                        break;
+                    case 'c':
+                        if (currentRubyResult && document.activeElement.id === 'rubyInput') {
+                            e.preventDefault();
+                            copyResult();
+                        }
+                        break;
+                }
+            }
+        });
+        
+        // ページ読み込み完了時
+        window.addEventListener('load', () => {
+            console.log('📚 まなびの窓口 - 準備完了！');
+            console.log(`🌐 動作環境: ${API_BASE === window.location.origin ? 'Vercel本番' : 'ローカル開発'}`);
+            console.log(`🔌 API接続先: ${API_BASE}/api/ruby`);
+            console.log('⌨️  ショートカット: Ctrl+Enter=実行, Ctrl+C=コピー');
+            console.log('✨ 改良版: ①ボタンルビ統一 ②音声認識グローバル管理 ③Vercel対応');
+            
+            // 最初の入力欄にフォーカス
+            document.getElementById('searchInput').focus();
+        });
+    </script>
+</body>
+</html>

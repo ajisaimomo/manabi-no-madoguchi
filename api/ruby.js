@@ -1,4 +1,5 @@
 import kuromoji from 'kuromoji';
+import { readdir, access } from 'fs/promises';
 
 let tokenizer = null;
 
@@ -32,6 +33,10 @@ function tokensToRubyHTML(tokens) {
 }
 
 export default async function handler(req, res) {
+    console.log('🚀 API関数が呼び出されました');
+    console.log('📝 リクエストメソッド:', req.method);
+    console.log('📝 リクエストURL:', req.url);
+    
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -57,12 +62,40 @@ export default async function handler(req, res) {
         }
         
         if (!tokenizer) {
+            try {
+                console.log('🔍 デバッグ開始');
+                console.log('📁 process.cwd():', process.cwd());
+                
+                // publicフォルダの確認
+                const publicFiles = await readdir('./public');
+                console.log('📂 public フォルダ内容:', publicFiles);
+                
+                // dictフォルダの確認
+                const dictFiles = await readdir('./public/dict');
+                console.log('📚 dict フォルダ内容:', dictFiles);
+                
+                // base.dat.gzの存在確認
+                await access('./public/dict/base.dat.gz');
+                console.log('✅ base.dat.gz 見つかりました');
+                
+            } catch (error) {
+                console.error('❌ ファイル確認エラー:', error);
+            }
+            
+            console.log('🔍 kuromoji初期化開始');
+            console.log('📁 dicPath:', process.cwd() + '/public/dict/');
+            
             tokenizer = await new Promise((resolve, reject) => {
                 kuromoji.builder({ 
-                    dicPath: process.cwd() + '/public/dict/' 
+                    dicPath: process.cwd() + '/public/dict/'
                 }).build((err, _tokenizer) => {
-                    if (err) reject(err);
-                    else resolve(_tokenizer);
+                    if (err) {
+                        console.error('❌ kuromoji初期化エラー:', err);
+                        reject(err);
+                    } else {
+                        console.log('✅ kuromoji初期化成功');
+                        resolve(_tokenizer);
+                    }
                 });
             });
         }

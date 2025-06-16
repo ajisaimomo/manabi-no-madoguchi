@@ -627,12 +627,12 @@
             copyBtn.style.display = 'none';
             
             try {
-                console.log(`🌐 API呼び出し: ${API_BASE}/api/ruby`);
+                console.log(`🌐 API呼び出し: ${API_BASE}/api/ruby-yahoo`);
                 
                 // サーバー接続確認
                 let response;
                 try {
-                    response = await fetch(`${API_BASE}/api/ruby`, {
+                    response = await fetch(`${API_BASE}/api/ruby-yahoo`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ text: text })
@@ -932,7 +932,7 @@
         window.addEventListener('load', () => {
             console.log('📚 まなびの窓口 - 準備完了！');
             console.log(`🌐 動作環境: ${API_BASE === window.location.origin ? 'Vercel本番' : 'ローカル開発'}`);
-            console.log(`🔌 API接続先: ${API_BASE}/api/ruby`);
+            console.log(`🔌 API接続先: ${API_BASE}/api/ruby-yahoo`);
             console.log('⌨️  ショートカット: Ctrl+Enter=実行, Ctrl+C=コピー');
             console.log('✨ 改良版: ①ボタンルビ統一 ②音声認識グローバル管理 ③Vercel対応');
             

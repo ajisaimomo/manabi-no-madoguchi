@@ -992,8 +992,15 @@
                 return;
             }
             
+            // ルビを除去して本文のみを抽出
             const tempDiv = document.createElement('div');
             tempDiv.innerHTML = currentRubyResult;
+            
+            // <rt>タグ（ルビ部分）を全て削除
+            const rtElements = tempDiv.querySelectorAll('rt');
+            rtElements.forEach(rt => rt.remove());
+            
+            // 本文のみを取得
             const textToSpeak = tempDiv.textContent || tempDiv.innerText || '';
             
             if (!textToSpeak.trim()) {

@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📚🤔 困ったとき・わからないとき</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'BIZ UDPゴシック', 'Yu Gothic UI', 'Meiryo UI', 'Hiragino Sans', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+            line-height: 2.0;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #5a67d8;
+            font-size: 2.2em;
+            margin-bottom: 30px;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        
+        .nav-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        h2 {
+            color: #4a5568;
+            font-size: 1.4em;
+            margin: 30px 0 15px 0;
+            padding-left: 15px;
+            border-left: 4px solid #667eea;
+            background: linear-gradient(90deg, rgba(102, 126, 234, 0.1) 0%, transparent 100%);
+            padding: 10px 15px;
+            border-radius: 5px;
+        }
+        
+        .intro {
+            background: linear-gradient(145deg, #e6fffa 0%, #c6f6d5 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border: 2px solid #48bb78;
+        }
+        
+        .intro h3 {
+            color: #22543d;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+        }
+        
+        .feature-box {
+            background: #f8f9ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .feature-box h4 {
+            color: #553c9a;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+        
+        .trouble-box {
+            background: #fff5f5;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border: 2px solid #fc8181;
+        }
+        
+        .trouble-box h4 {
+            color: #c53030;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+        
+        .tips-box {
+            background: #fef3c7;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border: 2px solid #f59e0b;
+        }
+        
+        .tips-box h4 {
+            color: #92400e;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+        
+        .step {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border: 1px solid #d1d5db;
+        }
+        
+        .step-number {
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .back-btn {
+            background: linear-gradient(45deg, #48bb78, #38a169);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 30px auto 0 auto;
+            text-decoration: none;
+            text-align: center;
+        }
+        
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(72, 187, 120, 0.4);
+        }
+        
+        @media (max-width: 768px) {
+            .container { padding: 20px; margin: 10px; }
+            h1 { font-size: 2.0em; }
+            h2 { font-size: 1.2em; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🤔 <ruby>困<rt>こま</rt></ruby>ったとき・わからないとき</h1>
+        
+        <div class="intro">
+            <p>
+                このサイトは、<strong><ruby>色々<rt>いろいろ</rt></ruby>な<ruby>人<rt>ひと</rt></ruby>が<ruby>情報<rt>じょうほう</rt></ruby>にアクセスできる</strong>ことを<ruby>願<rt>ねが</rt></ruby>って<ruby>作<rt>つく</rt></ruby>りました。<br>
+                <ruby>難<rt>むずか</rt></ruby>しい<ruby>漢字<rt>かんじ</rt></ruby>にルビ（ふりがな）をつけたり、<ruby>文章<rt>ぶんしょう</rt></ruby>を<ruby>読<rt>よ</rt></ruby>み<ruby>上<rt>あ</rt></ruby>げたりして、
+                <strong><ruby>興味<rt>きょうみ</rt></ruby>があることを<ruby>調<rt>しら</rt></ruby>べられる</strong>ようにお<ruby>手伝<rt>てつだ</rt></ruby>いします。
+            </p>
+        </div>
+        
+        <div class="nav-buttons">
+            <a href="#functions" class="nav-btn">🛠️ このサイトでできること</a>
+            <a href="#qa" class="nav-btn">❗ <ruby>困<rt>こま</rt></ruby>ったときは（Q&A）</a>
+            <a href="#tips" class="nav-btn">💡 <ruby>上手<rt>じょうず</rt></ruby>に<ruby>使<rt>つか</rt></ruby>うコツ</a>
+        </div>
+        
+        <h2 id="functions"><ruby>🛠️<rt></rt></ruby> このサイトでできること</h2>
+        
+        <div class="feature-box">
+            <h4><ruby>🔍<rt></rt></ruby> <ruby>ウェブ<rt></rt></ruby><ruby>検索<rt>けんさく</rt></ruby></h4>
+            <p><ruby>調<rt>しら</rt></ruby>べたいことを<ruby>入力<rt>にゅうりょく</rt></ruby>すると、Google<ruby>で<rt></rt></ruby><ruby>検索<rt>けんさく</rt></ruby>できます。<ruby>音声<rt>おんせい</rt></ruby><ruby>入力<rt>にゅうりょく</rt></ruby>もできます。</p>
+        </div>
+        
+        <div class="feature-box">
+            <h4><ruby>📖<rt></rt></ruby> <ruby>辞書<rt>じしょ</rt></ruby>で<ruby>調<rt>しら</rt></ruby>べる</h4>
+            <p><ruby>分<rt>わ</rt></ruby>からない<ruby>単語<rt>たんご</rt></ruby>を「Weblio<ruby>辞書<rt>じしょ</rt></ruby>」や「<ruby>学研<rt>がくけん</rt></ruby><ruby>辞書<rt>じしょ</rt></ruby>」で<ruby>調<rt>しら</rt></ruby>べることができます。</p>
+        </div>
+        
+        <div class="feature-box">
+            <h4><ruby>✨<rt></rt></ruby> <ruby>ルビ<rt></rt></ruby><ruby>振<rt>ふ</rt></ruby>り<ruby>機能<rt>きのう</rt></ruby></h4>
+            <p><ruby>難<rt>むずか</rt></ruby>しい<ruby>文章<rt>ぶんしょう</rt></ruby>をコピー＆ペーストすると、<ruby>漢字<rt>かんじ</rt></ruby>にルビ（ふりがな）をつけてくれます。</p>
+        </div>
+        
+        <div class="feature-box">
+            <h4><ruby>🔊<rt></rt></ruby> <ruby>読<rt>よ</rt></ruby>み<ruby>上<rt>あ</rt></ruby>げ<ruby>機能<rt>きのう</rt></ruby></h4>
+            <p>ルビがついた<ruby>文章<rt>ぶんしょう</rt></ruby>を、コンピューターが<ruby>音声<rt>おんせい</rt></ruby>で<ruby>読<rt>よ</rt></ruby>み<ruby>上<rt>あ</rt></ruby>げてくれます。</p>
+        </div>
+        
+        <h2 id="qa"><ruby>❗<rt></rt></ruby> <ruby>困<rt>こま</rt></ruby>ったときは（Q&A）</h2>
+        
+        <div class="trouble-box">
+            <h4><ruby>Q<rt></rt></ruby>. 「ルビを<ruby>付<rt>つ</rt></ruby>ける」ボタンを<ruby>押<rt>お</rt></ruby>してもエラーが<ruby>出<rt>で</rt></ruby>る</h4>
+            <p><strong><ruby>A<rt></rt></ruby>. <ruby>時間<rt>じかん</rt></ruby>をおいて、もう<ruby>一度<rt>いちど</rt></ruby><ruby>試<rt>ため</rt></ruby>してください</strong></p>
+            <p>
+                このサイトは、Yahoo!<ruby>という<rt></rt></ruby><ruby>会社<rt>かいしゃ</rt></ruby>のサービスを<ruby>使<rt>つか</rt></ruby>ってルビを<ruby>作<rt>つく</rt></ruby>っています。<br>
+                たくさんの<ruby>人<rt>ひと</rt></ruby>が<ruby>同時<rt>どうじ</rt></ruby>に<ruby>使<rt>つか</rt></ruby>ったり、Yahoo!<ruby>の<rt></rt></ruby>コンピューターが<ruby>忙<rt>いそが</rt></ruby>しいときは、
+                うまく<ruby>動<rt>うご</rt></ruby>かないことがあります。<br>
+                <strong>5<ruby>分<rt>ふん</rt></ruby>くらい<ruby>待<rt>ま</rt></ruby>ってから、もう<ruby>一度<rt>いちど</rt></ruby>やってみてください。</strong>
+            </p>
+        </div>
+        
+        <div class="trouble-box">
+            <h4><ruby>Q<rt></rt></ruby>. <ruby>音声<rt>おんせい</rt></ruby><ruby>入力<rt>にゅうりょく</rt></ruby>がうまくいかない</h4>
+            <p><strong><ruby>A<rt></rt></ruby>. マイクの<ruby>許可<rt>きょか</rt></ruby>を<ruby>確認<rt>かくにん</rt></ruby>してください</strong></p>
+            <p>
+                <ruby>音声<rt>おんせい</rt></ruby><ruby>入力<rt>にゅうりょく</rt></ruby>を<ruby>使<rt>つか</rt></ruby>うときは、ブラウザがマイクを<ruby>使<rt>つか</rt></ruby>う<ruby>許可<rt>きょか</rt></ruby>が<ruby>必要<rt>ひつよう</rt></ruby>です。<br>
+                アドレスバーの<ruby>左側<rt>ひだりがわ</rt></ruby>に🎤マークが<ruby>出<rt>で</rt></ruby>たら「<ruby>許可<rt>きょか</rt></ruby>」をクリックしてください。
+            </p>
+        </div>
+        
+        <div class="trouble-box">
+            <h4><ruby>Q<rt></rt></ruby>. <ruby>読<rt>よ</rt></ruby>み<ruby>上<rt>あ</rt></ruby>げの<ruby>声<rt>こえ</rt></ruby>が<ruby>聞<rt>き</rt></ruby>こえない</h4>
+            <p><strong><ruby>A<rt></rt></ruby>. <ruby>音量<rt>おんりょう</rt></ruby>とスピーカーを<ruby>確認<rt>かくにん</rt></ruby>してください</strong></p>
+            <p>
+                コンピューターの<ruby>音量<rt>おんりょう</rt></ruby>が<ruby>小<rt>ちい</rt></ruby>さくなっていたり、スピーカーがオフになっていると<ruby>聞<rt>き</rt></ruby>こえません。<br>
+                <ruby>音量<rt>おんりょう</rt></ruby>を<ruby>上<rt>あ</rt></ruby>げて、もう<ruby>一度<rt>いちど</rt></ruby><ruby>試<rt>ため</rt></ruby>してみてください。
+            </p>
+        </div>
+        
+        <h2 id="tips"><ruby>💡<rt></rt></ruby> <ruby>上手<rt>じょうず</rt></ruby>に<ruby>使<rt>つか</rt></ruby>うコツ</h2>
+        
+        <div class="tips-box">
+            <h4><ruby>🔍<rt></rt></ruby> <ruby>ウェブ<rt></rt></ruby><ruby>検索<rt>けんさく</rt></ruby>のコツ</h4>
+            <p><strong><ruby>文章<rt>ぶんしょう</rt></ruby>で<ruby>質問<rt>しつもん</rt></ruby>すると、Google AIが<ruby>答<rt>こた</rt></ruby>えてくれやすくなります</strong></p>
+            <p>
+                <ruby>例<rt>れい</rt></ruby>：「<ruby>平安<rt>へいあん</rt></ruby><ruby>時代<rt>じだい</rt></ruby>の<ruby>食事<rt>しょくじ</rt></ruby>はどんな？」<br>
+                <ruby>単語<rt>たんご</rt></ruby>だけだと、Web<ruby>検索<rt>けんさく</rt></ruby>でAIが<ruby>動<rt>うご</rt></ruby>かないこともあります。<br>
+                <ruby>文章<rt>ぶんしょう</rt></ruby>で<ruby>聞<rt>き</rt></ruby>くとGoogleAIが<ruby>動<rt>うご</rt></ruby>きやすいです！
+            </p>
+        </div>
+        
+        <div class="tips-box">
+            <h4><ruby>📝<rt></rt></ruby> <ruby>ルビ<rt></rt></ruby><ruby>振<rt>ふ</rt></ruby>りを<ruby>効果的<rt>こうかてき</rt></ruby>に<ruby>使<rt>つか</rt></ruby>う<ruby>方法<rt>ほうほう</rt></ruby></h4>
+            <p><strong><ruby>読<rt>よ</rt></ruby>みやすく<ruby>理解<rt>りかい</rt></ruby>しやすくするためのコツです</strong></p>
+            <p>
+                <strong>・<ruby>短<rt>みじか</rt></ruby>い<ruby>文章<rt>ぶんしょう</rt></ruby>から<ruby>始<rt>はじ</rt></ruby>めよう</strong><br>
+                <ruby>効果<rt>こうか</rt></ruby>：<ruby>処理<rt>しょり</rt></ruby>が<ruby>早<rt>はや</rt></ruby>く、<ruby>読<rt>よ</rt></ruby>みやすい<ruby>結果<rt>けっか</rt></ruby>になります<br>
+                <ruby>最初<rt>さいしょ</rt></ruby>は1〜2<ruby>行<rt>ぎょう</rt></ruby>の<ruby>短<rt>みじか</rt></ruby>い<ruby>文章<rt>ぶんしょう</rt></ruby>でルビ<ruby>振<rt>ふ</rt></ruby>りを<ruby>試<rt>ため</rt></ruby>してみてください。<br><br>
+                
+                <strong>・<ruby>段落<rt>だんらく</rt></ruby>を<ruby>分<rt>わ</rt></ruby>けよう</strong><br>
+                <ruby>効果<rt>こうか</rt></ruby>：<ruby>内容<rt>ないよう</rt></ruby>が<ruby>整理<rt>せいり</rt></ruby>されて、<ruby>理解<rt>りかい</rt></ruby>しやすくなります<br>
+                <ruby>音声<rt>おんせい</rt></ruby><ruby>読<rt>よ</rt></ruby>み<ruby>上<rt>あ</rt></ruby>げも<ruby>段落<rt>だんらく</rt></ruby>を<ruby>認識<rt>にんしき</rt></ruby>して、<ruby>自然<rt>しぜん</rt></ruby>な<ruby>区切<rt>くぎ</rt></ruby>りで<ruby>聞<rt>き</rt></ruby><ruby>取<rt>と</rt></ruby>りやすくなります<br>
+                <ruby>長<rt>なが</rt></ruby>い<ruby>文章<rt>ぶんしょう</rt></ruby>は、<ruby>改行<rt>かいぎょう</rt></ruby>を<ruby>入<rt>い</rt></ruby>れて<ruby>段落<rt>だんらく</rt></ruby>に<ruby>分<rt>わ</rt></ruby>けると<ruby>読<rt>よ</rt></ruby>みやすくなります。<br><br>
+                
+                <strong>・<ruby>見出<rt>みだ</rt></ruby>しには◆や●をつけよう</strong><br>
+                <ruby>効果<rt>こうか</rt></ruby>：<ruby>見出<rt>みだ</rt></ruby>しが<ruby>目立<rt>めだ</rt></ruby>って、<ruby>内容<rt>ないよう</rt></ruby>の<ruby>構造<rt>こうぞう</rt></ruby>が<ruby>分<rt>わ</rt></ruby>かりやすくなります<br>
+                「◆<ruby>主食<rt>しゅしょく</rt></ruby>」「●まとめ」のようにすると、<ruby>見出<rt>みだ</rt></ruby>しとして<ruby>認識<rt>にんしき</rt></ruby>されます。
+            </p>
+        </div>
+        
+        <div class="tips-box">
+            <h4><ruby>📋<rt></rt></ruby> Word<ruby>に<rt></rt></ruby><ruby>貼<rt>は</rt></ruby>り<ruby>付<rt>つ</rt></ruby>けるコツ</h4>
+            <p><strong>「<ruby>元<rt>もと</rt></ruby>の<ruby>書式<rt>しょしき</rt></ruby>を<ruby>保持<rt>ほじ</rt></ruby>」を<ruby>選<rt>えら</rt></ruby>ぶと、きれいに<ruby>貼<rt>は</rt></ruby>り<ruby>付<rt>つ</rt></ruby>けられます</strong></p>
+            <div class="step">
+                <span class="step-number">1</span>
+                ルビがついた<ruby>文章<rt>ぶんしょう</rt></ruby>を「<ruby>結果<rt>けっか</rt></ruby>をコピー」ボタンでコピーする
+            </div>
+            <div class="step">
+                <span class="step-number">2</span>
+                Word<ruby>を<rt></rt></ruby><ruby>開<rt>ひら</rt></ruby>いて、<ruby>右<rt>みぎ</rt></ruby>クリック→「<ruby>貼<rt>は</rt></ruby>り<ruby>付<rt>つ</rt></ruby>けのオプション」→「<ruby>元<rt>もと</rt></ruby>の<ruby>書式<rt>しょしき</rt></ruby>を<ruby>保持<rt>ほじ</rt></ruby>」を<ruby>選<rt>えら</rt></ruby>ぶ
+            </div>
+            <div class="step">
+                <span class="step-number">3</span>
+                ルビがついたまま、<ruby>文字<rt>もじ</rt></ruby>サイズ16px、<ruby>読<rt>よ</rt></ruby>みやすいフォントで<ruby>貼<rt>は</rt></ruby>り<ruby>付<rt>つ</rt></ruby>けられます
+            </div>
+        </div>
+        
+        <h2>🎓 作った人からのメッセージ</h2>
+        
+        <div class="intro">
+            <p>
+                このサイトは、<strong><ruby>色々<rt>いろいろ</rt></ruby>な<ruby>人<rt>ひと</rt></ruby>が<ruby>情報<rt>じょうほう</rt></ruby>にアクセスできる</strong>ことを<ruby>願<rt>ねが</rt></ruby>って<ruby>作<rt>つく</rt></ruby>りました。<br><br>
+                うまく<ruby>動<rt>うご</rt></ruby>かないときがあっても、<ruby>諦<rt>あきら</rt></ruby>めずに<ruby>何度<rt>なんど</rt></ruby>でも<ruby>試<rt>ため</rt></ruby>してみてください。<br>
+                きっと、<ruby>調<rt>しら</rt></ruby>べることがもっと<ruby>楽<rt>たの</rt></ruby>しくなるはずです。<br><br>
+                <strong>みんなの<ruby>学習<rt>がくしゅう</rt></ruby>を<ruby>応援<rt>おうえん</rt></ruby>しています！📚✨</strong>
+            </p>
+        </div>
+        
+        <a href="javascript:history.back()" class="back-btn">
+            🏠 メインページに戻る
+        </a>
+    </div>
+</body>
+</html>

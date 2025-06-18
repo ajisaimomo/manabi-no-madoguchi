@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><ruby>調<rt>しら</rt></ruby>べる<ruby>窓口<rt>まどぐち</rt></ruby> 📚✨</title>
+    <title>📚調べる窓口</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
@@ -574,6 +574,9 @@
             <a href="#ruby-section">
                 <ruby>✨<rt></rt></ruby> <ruby>ル<rt></rt></ruby><ruby>ビ<rt></rt></ruby><ruby>振<rt>ふ</rt></ruby>り
             </a>
+            <a href="help.html" target="_blank">
+                <ruby>🤔<rt></rt></ruby> <ruby>困<rt>こま</rt></ruby>ったとき
+            </a>
         </div>
         
         <h1><ruby>調<rt>しら</rt></ruby>べる<ruby>窓口<rt>まどぐち</rt></ruby> 📚✨</h1>
@@ -1061,7 +1064,7 @@
                 return;
             }
             
-            // ルビを除去して本文のみを抽出
+            // ルビを除去して本文のみを抽出（改良版）
             const tempDiv = document.createElement('div');
             tempDiv.innerHTML = currentRubyResult;
             
@@ -1069,7 +1072,25 @@
             const rtElements = tempDiv.querySelectorAll('rt');
             rtElements.forEach(rt => rt.remove());
             
-            // 本文のみを取得（段落HTMLタグも自動除去される）
+            // 段落系要素の後に改行追加
+            const paragraphElements = tempDiv.querySelectorAll('.paragraph-heading, .paragraph-content, .paragraph-break');
+            paragraphElements.forEach(el => {
+                el.innerHTML = el.innerHTML + '\n\n';
+            });
+            
+            // 見出し・太字要素の後に改行追加
+            const headingElements = tempDiv.querySelectorAll('h1, h2, h3, h4, h5, h6, strong, b');
+            headingElements.forEach(el => {
+                el.innerHTML = el.innerHTML + '\n';
+            });
+            
+            // ブロック要素の後に改行追加
+            const blockElements = tempDiv.querySelectorAll('div, p, li');
+            blockElements.forEach(el => {
+                el.innerHTML = el.innerHTML + '\n';
+            });
+            
+            // 本文のみを取得
             const textToSpeak = tempDiv.textContent || tempDiv.innerText || '';
             
             if (!textToSpeak.trim()) {

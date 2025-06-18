@@ -166,6 +166,49 @@
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
         
+        /* 🆕 学年選択セクション */
+        .grade-selector {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: linear-gradient(145deg, #f0f8ff 0%, #e8f4f8 100%);
+            border: 2px solid #b794f6;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+        
+        .grade-selector label {
+            font-weight: 600;
+            color: #4a5568;
+            white-space: nowrap;
+            min-width: 120px;
+        }
+        
+        .grade-selector select {
+            flex: 1;
+            padding: 12px 16px;
+            font-size: 15px;
+            border: 2px solid #cbd5e0;
+            border-radius: 8px;
+            background: white;
+            color: #2d3748;
+            font-family: inherit;
+            cursor: pointer;
+            transition: border-color 0.3s ease;
+        }
+        
+        .grade-selector select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .grade-selector select option {
+            padding: 8px;
+        }
+        
         /* ルビ振り用テキストエリア */
         textarea {
             width: 100%;
@@ -495,6 +538,25 @@
                 line-height: 1.3 !important;
             }
             
+            /* 🆕 スマホ用学年選択 */
+            .grade-selector {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+                padding: 12px;
+            }
+            
+            .grade-selector label {
+                min-width: unset;
+                text-align: center;
+                font-size: 15px;
+            }
+            
+            .grade-selector select {
+                font-size: 14px;
+                padding: 14px;
+            }
+            
             textarea {
                 padding: 16px;
                 font-size: 16px;
@@ -557,6 +619,12 @@
             .btn {
                 padding: 10px 14px;
                 font-size: 13px;
+            }
+            
+            /* 🆕 タブレット用学年選択 */
+            .grade-selector {
+                gap: 12px;
+                padding: 14px;
             }
         }
     </style>
@@ -643,6 +711,22 @@
                 <span class="desktop-text"><ruby>文章<rt>ぶんしょう</rt></ruby>にルビ<ruby>振<rt>ふ</rt></ruby>り（Word<ruby>貼<rt>は</rt></ruby>り<ruby>付<rt>つ</rt></ruby>け<ruby>対応<rt>たいおう</rt></ruby>）</span>
                 <span class="mobile-text" style="display: none;">ルビ<ruby>振<rt>ふ</rt></ruby>り</span>
             </h2>
+            
+            <!-- 🆕 学年選択セクション -->
+            <div class="grade-selector">
+                <label for="gradeSelect">📚 学年(がくねん)設定(せってい)：</label>
+                <select id="gradeSelect">
+                    <option value="">学年(がくねん)を選択(せんたく)してください（全(ぜん)ルビで処理(しょり)されます）</option>
+                    <option value="1">小学(しょうがく)1年生(ねんせい)レベル（ほとんどの漢字(かんじ)にルビ）</option>
+                    <option value="2">小学(しょうがく)2年生(ねんせい)レベル</option>
+                    <option value="3">小学(しょうがく)3年生(ねんせい)レベル</option>
+                    <option value="4">小学(しょうがく)4年生(ねんせい)レベル</option>
+                    <option value="5">小学(しょうがく)5年生(ねんせい)レベル</option>
+                    <option value="6">小学(しょうがく)6年生(ねんせい)レベル（おすすめ）</option>
+                    <option value="8">中学生(ちゅうがくせい)レベル（難(むずか)しい漢字(かんじ)のみルビ）</option>
+                </select>
+            </div>
+            
             <textarea id="rubyInput" rows="8" placeholder="ここに文章(ぶんしょう)をコピー&ペーストしてください。検索結果(けんさくけっか)やニュース、教科書(きょうかしょ)、論文(ろんぶん)など何でもOK！最大(さいだい)2000文字(もじ)まで処理(しょり)できます。段落構造(だんらくこうぞう)も自動(じどう)で保持(ほじ)されます。"></textarea>
             <div class="ruby-buttons">
                 <button class="btn" onclick="addRuby()" id="rubyBtn">
@@ -929,7 +1013,7 @@
             if (DEBUG) console.log('🗑️ 辞書セクション消去');
         }
         
-        // 🆕 Yahoo! APIルビ振り機能（段落対応版）
+        // 🆕 Yahoo! APIルビ振り機能（学年選択対応版）
         async function addRuby() {
             const text = document.getElementById('rubyInput').value.trim();
             if (!text) {
@@ -941,6 +1025,14 @@
                 alert('文章が長すぎます。2000文字以内にしてください。');
                 return;
             }
+            
+            // 🆕 学年設定を取得
+            const gradeSelect = document.getElementById('gradeSelect');
+            const gradeValue = gradeSelect.value;
+            const grade = gradeValue === '' ? 1 : parseInt(gradeValue); // 未選択時は全ルビ（grade: 1）
+            
+            // 学年表示用テキスト
+            const gradeText = gradeValue === '' ? '全ルビモード' : gradeSelect.options[gradeSelect.selectedIndex].text;
             
             const resultDiv = document.getElementById('rubyResult');
             const rubyBtn = document.getElementById('rubyBtn');
@@ -957,7 +1049,7 @@
                     <div style="font-size: 1.5em; margin-bottom: 10px;">⚡</div>
                     <div>Yahoo! Text Analytics API でルビを振っています...</div>
                     <div style="font-size: 14px; color: #666; margin-top: 5px;">
-                        ${paragraphInfo}
+                        📚 ${gradeText} | ${paragraphInfo}
                     </div>
                 </div>
             `;
@@ -965,15 +1057,15 @@
             copyBtn.style.display = 'none';
             
             try {
-                if (DEBUG) console.log(`🌐 Yahoo! API呼び出し: ${API_BASE}/api/ruby-yahoo`);
+                if (DEBUG) console.log(`🌐 Yahoo! API呼び出し: ${API_BASE}/api/ruby-yahoo (学年: ${grade})`);
                 
                 const response = await fetch(`${API_BASE}/api/ruby-yahoo`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
                         text: text, 
-                        grade: 1,
-                        preserveParagraphs: true // 🆕 段落保持を有効化
+                        grade: grade, // 🆕 学年を送信
+                        preserveParagraphs: true
                     })
                 });
                 
@@ -987,26 +1079,26 @@
                 if (data.success) {
                     currentRubyResult = data.rubyText;
                     
-                    // 🆕 段落モード表示
+                    // 🆕 学年・段落モード表示
                     const modeText = data.paragraphMode ? '📋 段落構造保持モード' : '📄 シンプルモード';
                     
                     resultDiv.className = 'result-box result-success';
                     resultDiv.innerHTML = `
                         <div style="font-weight: bold; margin-bottom: 15px; color: #2d3748;">
-                            ✨ Yahoo! API ルビ振り完了！ (${modeText})
+                            ✨ Yahoo! API ルビ振り完了！ (📚 ${gradeText} | ${modeText})
                         </div>
                         <div style="padding: 20px; background: #fff; border-radius: 10px; border: 2px solid #e2e8f0; line-height: 2.2;">
                             ${data.rubyText}
                         </div>
                         <div class="stats">
-                            📊 ${text.length}文字 → ${data.segmentCount}セグメント処理完了 | ${data.provider}
+                            📊 ${text.length}文字 → ${data.segmentCount}セグメント処理完了 | 学年レベル: ${data.grade} | ${data.provider}
                         </div>
                     `;
                     
                     copyBtn.style.display = 'flex';
                     document.getElementById('speakBtn').style.display = 'flex';
                     document.getElementById('stopBtn').style.display = 'flex';
-                    if (DEBUG) console.log(`✨ Yahoo! API ルビ振り完了: ${data.segmentCount}セグメント (段落モード: ${data.paragraphMode})`);
+                    if (DEBUG) console.log(`✨ Yahoo! API ルビ振り完了: ${data.segmentCount}セグメント (学年: ${data.grade}, 段落モード: ${data.paragraphMode})`);
                 } else {
                     throw new Error(data.error || 'ルビ振り処理でエラーが発生しました');
                 }
@@ -1036,20 +1128,22 @@
             }
         }
         
-        // ルビセクション消去
+        // ルビセクション消去（学年選択もリセット）
         function clearRuby() {
             document.getElementById('rubyInput').value = '';
             document.getElementById('rubyResult').style.display = 'none';
             document.getElementById('copyBtn').style.display = 'none';
             document.getElementById('speakBtn').style.display = 'none';
             document.getElementById('stopBtn').style.display = 'none';
+            // 🆕 学年選択もリセット
+            document.getElementById('gradeSelect').value = '';
             currentRubyResult = '';
             
             if ('speechSynthesis' in window) {
                 speechSynthesis.cancel();
             }
             
-            if (DEBUG) console.log('🗑️ ルビセクション消去');
+            if (DEBUG) console.log('🗑️ ルビセクション消去（学年選択もリセット）');
         }
         
         // ルビ振り結果の読み上げ機能
@@ -1125,136 +1219,4 @@
             utterance.onerror = (event) => {
                 console.error('読み上げエラー:', event.error);
                 speakBtn.style.background = 'linear-gradient(45deg, #48bb78, #38a169)';
-                speakBtn.innerHTML = '<ruby>🔊<rt></rt></ruby> <ruby>読<rt>よ</rt></ruby><ruby>み<rt></rt></ruby><ruby>上<rt>あ</rt></ruby><ruby>げ<rt></rt></ruby>';
-                showNotification('❌ 読み上げでエラーが発生しました', 'error');
-            };
-            
-            speechSynthesis.speak(utterance);
-        }
-        
-        // 読み上げ停止機能
-        function stopSpeaking() {
-            if ('speechSynthesis' in window) {
-                speechSynthesis.cancel();
-                
-                const speakBtn = document.getElementById('speakBtn');
-                speakBtn.style.background = 'linear-gradient(45deg, #48bb78, #38a169)';
-                speakBtn.innerHTML = '<ruby>🔊<rt></rt></ruby> <ruby>読<rt>よ</rt></ruby><ruby>み<rt></rt></ruby><ruby>上<rt>あ</rt></ruby><ruby>げ<rt></rt></ruby>';
-                
-                if (DEBUG) console.log('⏹️ 読み上げ停止');
-                showNotification('⏹️ 読み上げを停止しました', 'info');
-            }
-        }
-        
-        // 結果をコピー（Word貼り付け対応）
-        function copyResult() {
-            if (!currentRubyResult) {
-                alert('コピーする結果がありません');
-                return;
-            }
-            
-            try {
-                const optimizedHTML = `
-                    <div style="font-family: 'BIZ UDPゴシック', 'Yu Gothic UI', 'Meiryo UI', 'Hiragino Sans', sans-serif; font-size: 16px; line-height: 2.2;">
-                        ${currentRubyResult.replace(/<ruby>/g, '<ruby style="font-size: 16px;">').replace(/<rt>/g, '<rt style="font-size: 8px; color: #666;">')}
-                    </div>
-                `;
-                
-                const plainText = currentRubyResult.replace(/<[^>]*>/g, '');
-                
-                if (navigator.clipboard && navigator.clipboard.write) {
-                    const clipboardItem = new ClipboardItem({
-                        'text/html': new Blob([optimizedHTML], { type: 'text/html' }),
-                        'text/plain': new Blob([plainText], { type: 'text/plain' })
-                    });
-                    
-                    navigator.clipboard.write([clipboardItem]).then(() => {
-                        showCopySuccess('Word最適化版');
-                        if (DEBUG) console.log('📋 Word最適化HTML + テキストをコピー完了');
-                    }).catch(err => {
-                        if (DEBUG) console.log('HTML+テキストコピー失敗、フォールバック実行');
-                        fallbackCopy();
-                    });
-                } else {
-                    fallbackCopy();
-                }
-                
-            } catch (error) {
-                console.error('コピーエラー:', error);
-                alert('コピーに失敗しました');
-            }
-        }
-        
-        function fallbackCopy() {
-            const textArea = document.createElement('textarea');
-            textArea.value = currentRubyResult.replace(/<[^>]*>/g, '');
-            document.body.appendChild(textArea);
-            textArea.select();
-            document.execCommand('copy');
-            document.body.removeChild(textArea);
-            showCopySuccess('テキスト版');
-            if (DEBUG) console.log('📋 テキストをコピー完了（フォールバック）');
-        }
-        
-        function showCopySuccess(type) {
-            const notification = document.createElement('div');
-            notification.className = 'copy-success';
-            notification.innerHTML = `
-                <div style="font-weight: bold; margin-bottom: 5px;">📋 コピー完了！</div>
-                <div style="font-size: 13px;">
-                    ${type}をコピーしました<br>
-                    Wordに貼り付けると文字16px、ルビ8pxで表示されます
-                </div>
-            `;
-            document.body.appendChild(notification);
-            
-            setTimeout(() => {
-                if (document.body.contains(notification)) {
-                    document.body.removeChild(notification);
-                }
-            }, 4000);
-        }
-        
-        // キーボードショートカット
-        document.addEventListener('keydown', (e) => {
-            if (e.ctrlKey || e.metaKey) {
-                switch (e.key) {
-                    case 'Enter':
-                        if (document.activeElement.id === 'searchInput') {
-                            e.preventDefault();
-                            googleSearch();
-                        } else if (document.activeElement.id === 'dictInput') {
-                            e.preventDefault();
-                            searchWeblio();
-                        } else if (document.activeElement.id === 'rubyInput') {
-                            e.preventDefault();
-                            addRuby();
-                        }
-                        break;
-                    case 'c':
-                        if (currentRubyResult && document.activeElement.id === 'rubyInput') {
-                            e.preventDefault();
-                            copyResult();
-                        }
-                        break;
-                }
-            }
-        });
-        
-        // ページ読み込み完了時（デバッグメッセージを本番では非表示）
-        window.addEventListener('load', () => {
-            if (DEBUG) {
-                console.log('📚 調べる窓口 v4.0 - 段落機能付き完全版準備完了！');
-                console.log(`🌐 動作環境: ${API_BASE === window.location.origin ? 'Vercel本番' : 'ローカル開発'}`);
-                console.log(`🔌 API接続先: ${API_BASE}/api/ruby-yahoo`);
-                console.log('⌨️  ショートカット: Ctrl+Enter=実行, Ctrl+C=コピー');
-                console.log('✅ タイトル: 調べる窓口（ルビ付き）');
-                console.log('✅ 法的配慮: Google・Weblio非提携明記');
-                console.log('🆕 段落機能: 改行・見出しマーク自動検出');
-            }
-            
-            document.getElementById('searchInput').focus();
-        });
-    </script>
-</body>
-</html>
+                speakBtn.innerHTML = '<ruby>🔊<rt></rt></ruby> <ruby>読<rt>よ</rt></ruby><ruby>み<rt></rt>

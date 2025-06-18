@@ -1,6 +1,141 @@
-// Yahoo! Text Analytics API を使用したルビ振り実装
+// 段落情報を保持するYahoo! API実装
 // api/ruby-yahoo.js
-// kuromoji.js の代替として Yahoo! API を使用
+
+// 段落構造解析関数
+function analyzeParagraphStructure(text) {
+    const lines = text.split('\n');
+    const structure = [];
+    
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        const trimmed = line.trim();
+        
+        structure.push({
+            content: line,
+            trimmed: trimmed,
+            isHeading: /^[◆●▲■♦]/.test(trimmed), // 見出しマーク検出
+            isEmpty: trimmed === '',
+            isSpacing: /^\s*$/.test(line), // 空白のみの行
+            lineNumber: i,
+            originalLength: line.length
+        });
+    }
+    
+    return structure;
+}
+
+// 段落構造付きでテキストを再構築
+function reconstructWithParagraphs(yahooSegments, originalText) {
+    const paragraphStructure = analyzeParagraphStructure(originalText);
+    
+    // Yahoo!のセグメントから文字位置マップを作成
+    let segmentPosition = 0;
+    const positionMap = new Map();
+    
+    for (const segment of yahooSegments) {
+        const surface = segment.surface;
+        const startPos = segmentPosition;
+        const endPos = segmentPosition + surface.length;
+        
+        positionMap.set(startPos, {
+            segment: segment,
+            startPos: startPos,
+            endPos: endPos
+        });
+        
+        segmentPosition += surface.length;
+    }
+    
+    // 段落ごとにHTML構築
+    let result = '';
+    let currentPosition = 0;
+    
+    for (const para of paragraphStructure) {
+        if (para.isEmpty || para.isSpacing) {
+            // 空行はそのまま
+            result += '<div class="paragraph-break"></div>';
+            currentPosition += para.originalLength + 1; // +1 for \n
+            continue;
+        }
+        
+        if (para.isHeading) {
+            // 見出し行
+            const headingHTML = processLineWithRuby(para.trimmed, currentPosition, positionMap);
+            result += `<div class="paragraph-heading">${headingHTML}</div>`;
+        } else {
+            // 通常の段落
+            const paragraphHTML = processLineWithRuby(para.trimmed, currentPosition, positionMap);
+            result += `<div class="paragraph-content">${paragraphHTML}</div>`;
+        }
+        
+        currentPosition += para.originalLength + 1; // +1 for \n
+    }
+    
+    return result;
+}
+
+// 1行分のテキストをルビ付きHTMLに変換
+function processLineWithRuby(lineText, startPos, positionMap) {
+    if (!lineText.trim()) return '';
+    
+    let result = '';
+    let currentPos = startPos;
+    
+    // この行に含まれるセグメントを順次処理
+    for (let i = 0; i < lineText.length; ) {
+        let segmentFound = false;
+        
+        // 現在位置からのセグメントを探索
+        for (const [pos, data] of positionMap) {
+            if (pos >= currentPos && pos <= currentPos + 10) { // 前後の許容範囲
+                const segment = data.segment;
+                const surface = segment.surface;
+                
+                // テキスト一致確認
+                if (lineText.substring(i, i + surface.length) === surface) {
+                    // ルビ処理
+                    if (segment.furigana && segment.furigana !== surface) {
+                        result += `<ruby>${surface}<rt>${segment.furigana}</rt></ruby>`;
+                    } else {
+                        result += surface;
+                    }
+                    
+                    i += surface.length;
+                    currentPos += surface.length;
+                    segmentFound = true;
+                    break;
+                }
+            }
+        }
+        
+        if (!segmentFound) {
+            // セグメントが見つからない場合は1文字そのまま
+            result += lineText[i];
+            i++;
+            currentPos++;
+        }
+    }
+    
+    return result;
+}
+
+// シンプルな段落なしバージョン（フォールバック用）
+function simpleRubyConversion(yahooSegments) {
+    let result = '';
+    
+    for (const segment of yahooSegments) {
+        const surface = segment.surface;
+        const furigana = segment.furigana;
+        
+        if (furigana && furigana !== surface) {
+            result += `<ruby>${surface}<rt>${furigana}</rt></ruby>`;
+        } else {
+            result += surface;
+        }
+    }
+    
+    return result;
+}
 
 export default async function handler(req, res) {
     // CORS対応
@@ -18,18 +153,19 @@ export default async function handler(req, res) {
     }
     
     try {
-        const { text, grade = 1 } = req.body;
+        const { text, grade = 1, preserveParagraphs = true } = req.body;
         
         // 入力検証
         if (!text || typeof text !== 'string') {
             return res.status(400).json({ error: '有効なテキストを入力してください' });
         }
         
-        if (text.length > 1000) {
-            return res.status(400).json({ error: 'テキストが長すぎます（最大1000文字）' });
+        if (text.length > 2000) {
+            return res.status(400).json({ error: 'テキストが長すぎます（最大2000文字）' });
         }
         
         console.log(`🎯 Yahoo! API呼び出し開始: "${text.substring(0, 30)}..."`);
+        console.log(`📋 段落保持モード: ${preserveParagraphs ? 'ON' : 'OFF'}`);
         
         // Yahoo! Text Analytics API呼び出し
         const yahooResponse = await fetch('https://jlp.yahooapis.jp/FuriganaService/V2/furigana', {
@@ -44,7 +180,7 @@ export default async function handler(req, res) {
                 method: "jlp.furiganaservice.furigana",
                 params: {
                     q: text,
-                    grade: parseInt(grade) // 1=小1以上, 2=小2以上, etc.
+                    grade: parseInt(grade)
                 }
             })
         });
@@ -60,28 +196,34 @@ export default async function handler(req, res) {
         }
         
         // レスポンス形式変換
-        const word = yahooData.result.word || [];
+        const segments = yahooData.result.word || [];
         let rubyHTML = '';
         
-        for (const segment of word) {
-            if (segment.furigana && segment.furigana !== segment.surface) {
-                // ルビが必要な場合
-                rubyHTML += `<ruby>${segment.surface}<rt>${segment.furigana}</rt></ruby>`;
-            } else {
-                // ルビ不要の場合（ひらがな・カタカナ・記号等）
-                rubyHTML += segment.surface;
+        // 段落保持モードの分岐
+        if (preserveParagraphs && (text.includes('\n') || /[◆●▲■♦]/.test(text))) {
+            console.log('📝 段落構造を検出 - 段落保持モードで処理');
+            try {
+                rubyHTML = reconstructWithParagraphs(segments, text);
+                console.log('✅ 段落保持処理完了');
+            } catch (error) {
+                console.log('⚠️ 段落処理でエラー、シンプルモードにフォールバック:', error.message);
+                rubyHTML = simpleRubyConversion(segments);
             }
+        } else {
+            console.log('📄 シンプルモードで処理');
+            rubyHTML = simpleRubyConversion(segments);
         }
         
-        console.log(`✅ Yahoo! API処理完了: ${word.length}セグメント`);
+        console.log(`✅ Yahoo! API処理完了: ${segments.length}セグメント`);
         
         res.json({
             success: true,
             rubyText: rubyHTML,
-            segmentCount: word.length,
+            segmentCount: segments.length,
             inputLength: text.length,
             provider: 'Yahoo! Text Analytics API',
-            grade: grade
+            grade: grade,
+            paragraphMode: preserveParagraphs && (text.includes('\n') || /[◆●▲■♦]/.test(text))
         });
         
     } catch (error) {

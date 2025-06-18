@@ -1,4 +1,4 @@
-// 段落情報を保持するYahoo! API実装
+// 段落情報を保持するYahoo! API実装（特殊文字対応版）
 // api/ruby-yahoo.js
 
 // 段落構造解析関数
@@ -153,12 +153,27 @@ export default async function handler(req, res) {
     }
     
     try {
-        const { text, grade = 1, preserveParagraphs = true } = req.body;
+        const { text: rawText, grade = 1, preserveParagraphs = true } = req.body;
         
         // 入力検証
-        if (!text || typeof text !== 'string') {
+        if (!rawText || typeof rawText !== 'string') {
             return res.status(400).json({ error: '有効なテキストを入力してください' });
         }
+        
+        // 🆕 特殊文字クリーニング（追加部分）
+        let text = rawText
+            .replace(/[\uFEFF\u200B\u200C\u200D\u2060]/g, '') // ゼロ幅文字除去
+            .replace(/\*\*(.*?)\*\*/g, '$1') // **太字** → 太字
+            .replace(/\*(.*?)\*/g, '$1') // *斜体* → 斜体  
+            .replace(/^\s*[\*\-\+]\s+/gm, '') // リスト記号除去
+            .replace(/&nbsp;/g, ' ') // &nbsp; → スペース
+            .replace(/&amp;/g, '&') // &amp; → &
+            .replace(/&lt;/g, '<') // &lt; → <
+            .replace(/&gt;/g, '>') // &gt; → >
+            .replace(/&quot;/g, '"') // &quot; → "
+            .replace(/&#39;/g, "'") // &#39; → '
+            .replace(/[ \t]+/g, ' ') // 連続スペース → 単一スペース
+            .trim(); // 前後空白除去
         
         if (text.length > 2000) {
             return res.status(400).json({ error: 'テキストが長すぎます（最大2000文字）' });
@@ -166,6 +181,7 @@ export default async function handler(req, res) {
         
         console.log(`🎯 Yahoo! API呼び出し開始: "${text.substring(0, 30)}..."`);
         console.log(`📋 段落保持モード: ${preserveParagraphs ? 'ON' : 'OFF'}`);
+        console.log(`✂️ クリーニング: ${rawText.length}文字 → ${text.length}文字`);
         
         // Yahoo! Text Analytics API呼び出し
         const yahooResponse = await fetch('https://jlp.yahooapis.jp/FuriganaService/V2/furigana', {
@@ -220,8 +236,9 @@ export default async function handler(req, res) {
             success: true,
             rubyText: rubyHTML,
             segmentCount: segments.length,
-            inputLength: text.length,
-            provider: 'Yahoo! Text Analytics API',
+            inputLength: rawText.length,
+            cleanedLength: text.length,
+            provider: 'Yahoo! Text Analytics API (特殊文字対応版)',
             grade: grade,
             paragraphMode: preserveParagraphs && (text.includes('\n') || /[◆●▲■♦]/.test(text))
         });

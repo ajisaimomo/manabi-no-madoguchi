@@ -380,51 +380,6 @@
             100% { opacity: 0; transform: translateX(100px); }
         }
         
-        /* 🆕 段落保持機能用のスタイル */
-        .paragraph-heading {
-            font-weight: bold;
-            color: #2d3748;
-            margin: 1.8em 0 0.8em 0;
-            font-size: 1.1em;
-            border-left: 4px solid #667eea;
-            padding-left: 12px;
-            background: linear-gradient(90deg, rgba(102, 126, 234, 0.1) 0%, transparent 100%);
-            border-radius: 4px;
-        }
-        
-        .paragraph-content {
-            margin-bottom: 1.2em;
-            text-indent: 1em;
-            line-height: 2.4;
-        }
-        
-        .paragraph-break {
-            height: 0.8em;
-            margin: 0.4em 0;
-        }
-        
-        /* 段落内のルビスタイル統一 */
-        .paragraph-heading ruby,
-        .paragraph-content ruby {
-            ruby-align: start;
-            ruby-position: over;
-            display: inline-ruby;
-        }
-        
-        .paragraph-heading ruby rt,
-        .paragraph-content ruby rt {
-            font-size: 0.5em;
-            color: #666;
-            line-height: 1.0;
-            font-weight: normal;
-        }
-        
-        /* 見出しのルビは少し小さく */
-        .paragraph-heading ruby rt {
-            font-size: 0.45em;
-            color: #555;
-        }
-        
         /* スマホ対応（完全修正版） */
         @media (max-width: 768px) {
             /* ナビゲーションバーをスマホ対応 */
@@ -537,19 +492,6 @@
                 max-height: 200px;
                 font-size: 15px;
             }
-            
-            /* 🆕 スマホでの段落スタイル調整 */
-            .paragraph-heading {
-                margin: 1.2em 0 0.6em 0;
-                font-size: 1.0em;
-                padding-left: 8px;
-            }
-            
-            .paragraph-content {
-                margin-bottom: 1.0em;
-                text-indent: 0.8em;
-                line-height: 2.2;
-            }
         }
         
         /* タブレット対応 */
@@ -640,7 +582,7 @@
                 <span class="desktop-text"><ruby>文章<rt>ぶんしょう</rt></ruby>にルビ<ruby>振<rt>ふ</rt></ruby>り（Word<ruby>貼<rt>は</rt></ruby>り<ruby>付<rt>つ</rt></ruby>け<ruby>対応<rt>たいおう</rt></ruby>）</span>
                 <span class="mobile-text" style="display: none;">ルビ<ruby>振<rt>ふ</rt></ruby>り</span>
             </h2>
-            <textarea id="rubyInput" rows="8" placeholder="ここに文章(ぶんしょう)をコピー&ペーストしてください。検索結果(けんさくけっか)やニュース、教科書(きょうかしょ)、論文(ろんぶん)など何でもOK！最大(さいだい)2000文字(もじ)まで処理(しょり)できます。段落構造(だんらくこうぞう)も自動(じどう)で保持(ほじ)されます。"></textarea>
+            <textarea id="rubyInput" rows="8" placeholder="ここに文章(ぶんしょう)をコピー&ペーストしてください。検索結果(けんさくけっか)やニュース、教科書(きょうかしょ)、論文(ろんぶん)など何でもOK！最大(さいだい)2000文字(もじ)まで処理(しょり)できます。"></textarea>
             <div class="ruby-buttons">
                 <button class="btn" onclick="addRuby()" id="rubyBtn">
                     <ruby>✨<rt></rt></ruby> <ruby>ル<rt></rt></ruby><ruby>ビ<rt></rt></ruby><ruby>を<rt></rt></ruby><ruby>つ<rt></rt></ruby><ruby>け<rt></rt></ruby><ruby>る<rt></rt></ruby>
@@ -858,7 +800,7 @@
             }
         }
         
-        // Weblio辞書で検索
+        // 🔧 修復: Weblio辞書で検索
         function searchWeblio() {
             const word = document.getElementById('dictInput').value.trim();
             if (!word) {
@@ -888,7 +830,7 @@
             if (DEBUG) console.log(`📚 Weblio辞書検索: "${word}"`);
         }
         
-        // 学研キッズ辞書で検索
+        // 🔧 修復: 学研キッズ辞書で検索
         function searchGakken() {
             const word = document.getElementById('dictInput').value.trim();
             if (!word) {
@@ -926,7 +868,7 @@
             if (DEBUG) console.log('🗑️ 辞書セクション消去');
         }
         
-        // 🆕 Yahoo! APIルビ振り機能（段落対応版）
+        // Yahoo! APIルビ振り機能
         async function addRuby() {
             const text = document.getElementById('rubyInput').value.trim();
             if (!text) {
@@ -943,10 +885,6 @@
             const rubyBtn = document.getElementById('rubyBtn');
             const copyBtn = document.getElementById('copyBtn');
             
-            // 段落構造検出
-            const hasParagraphs = text.includes('\n') || /[◆●▲■♦]/.test(text);
-            const paragraphInfo = hasParagraphs ? '📋 段落構造を検出しました' : '📄 単一段落として処理します';
-            
             resultDiv.style.display = 'block';
             resultDiv.className = 'result-box result-loading';
             resultDiv.innerHTML = `
@@ -954,7 +892,7 @@
                     <div style="font-size: 1.5em; margin-bottom: 10px;">⚡</div>
                     <div>Yahoo! Text Analytics API でルビを振っています...</div>
                     <div style="font-size: 14px; color: #666; margin-top: 5px;">
-                        ${paragraphInfo}
+                        高精度な形態素解析でルビを生成中...
                     </div>
                 </div>
             `;
@@ -967,11 +905,7 @@
                 const response = await fetch(`${API_BASE}/api/ruby-yahoo`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        text: text, 
-                        grade: 1,
-                        preserveParagraphs: true // 🆕 段落保持を有効化
-                    })
+                    body: JSON.stringify({ text: text, grade: 1 })
                 });
                 
                 if (!response.ok) {
@@ -984,13 +918,10 @@
                 if (data.success) {
                     currentRubyResult = data.rubyText;
                     
-                    // 🆕 段落モード表示
-                    const modeText = data.paragraphMode ? '📋 段落構造保持モード' : '📄 シンプルモード';
-                    
                     resultDiv.className = 'result-box result-success';
                     resultDiv.innerHTML = `
                         <div style="font-weight: bold; margin-bottom: 15px; color: #2d3748;">
-                            ✨ Yahoo! API ルビ振り完了！ (${modeText})
+                            ✨ Yahoo! API ルビ振り完了！
                         </div>
                         <div style="padding: 20px; background: #fff; border-radius: 10px; border: 2px solid #e2e8f0; line-height: 2.2;">
                             ${data.rubyText}
@@ -1003,7 +934,7 @@
                     copyBtn.style.display = 'flex';
                     document.getElementById('speakBtn').style.display = 'flex';
                     document.getElementById('stopBtn').style.display = 'flex';
-                    if (DEBUG) console.log(`✨ Yahoo! API ルビ振り完了: ${data.segmentCount}セグメント (段落モード: ${data.paragraphMode})`);
+                    if (DEBUG) console.log(`✨ Yahoo! API ルビ振り完了: ${data.segmentCount}セグメント`);
                 } else {
                     throw new Error(data.error || 'ルビ振り処理でエラーが発生しました');
                 }
@@ -1069,7 +1000,7 @@
             const rtElements = tempDiv.querySelectorAll('rt');
             rtElements.forEach(rt => rt.remove());
             
-            // 本文のみを取得（段落HTMLタグも自動除去される）
+            // 本文のみを取得
             const textToSpeak = tempDiv.textContent || tempDiv.innerText || '';
             
             if (!textToSpeak.trim()) {
@@ -1223,13 +1154,12 @@
         // ページ読み込み完了時（デバッグメッセージを本番では非表示）
         window.addEventListener('load', () => {
             if (DEBUG) {
-                console.log('📚 調べる窓口 v4.0 - 段落機能付き完全版準備完了！');
+                console.log('📚 調べる窓口 v3.0 - 完全版準備完了！');
                 console.log(`🌐 動作環境: ${API_BASE === window.location.origin ? 'Vercel本番' : 'ローカル開発'}`);
                 console.log(`🔌 API接続先: ${API_BASE}/api/ruby-yahoo`);
                 console.log('⌨️  ショートカット: Ctrl+Enter=実行, Ctrl+C=コピー');
                 console.log('✅ タイトル: 調べる窓口（ルビ付き）');
                 console.log('✅ 法的配慮: Google・Weblio非提携明記');
-                console.log('🆕 段落機能: 改行・見出しマーク自動検出');
             }
             
             document.getElementById('searchInput').focus();

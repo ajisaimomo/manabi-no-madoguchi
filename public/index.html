@@ -456,13 +456,13 @@
                     resultDiv.className = 'result-box result-success';
                     resultDiv.innerHTML = `
                         <div style="font-weight: bold; margin-bottom: 15px; color: #2d3748;">
-                            ✨ Yahoo! API ルビ振り完了！ (📚 ${gradeText} | ${modeText})
+                            ✨ ルビ振り完了！ (${modeText})
                         </div>
                         <div style="padding: 20px; background: #fff; border-radius: 10px; border: 2px solid #e2e8f0; line-height: 2.2;">
                             ${data.rubyText}
                         </div>
                         <div class="stats">
-                            📊 ${text.length}文字 → ${data.segmentCount}セグメント処理完了 | 学年レベル: ${data.grade} | ${data.provider}
+                            📊 ${text.length}文字 → ${data.segmentCount}セグメント処理完了
                         </div>
                     `;
                     

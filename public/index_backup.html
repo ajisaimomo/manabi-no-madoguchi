@@ -29,7 +29,7 @@
                 <span class="mobile-text" style="display: none;">ウェブ<ruby>検索<rt>けんさく</rt></ruby></span>
             </h2>
             <div class="input-group">
-                <input type="text" id="searchInput" placeholder="調(しら)べたいことを入力(にゅうりょく)してください">
+                <input type="text" id="searchInput" inputmode="verbatim" placeholder="調(しら)べたいことを入力(にゅうりょく)してください">
             </div>
             <div class="search-buttons">
                 <button class="btn btn-voice" onclick="startVoiceSearch()" id="voiceBtn" title="音声入力">
@@ -39,6 +39,9 @@
                     <ruby>🔍<rt></rt></ruby> <ruby>検<rt>けん</rt></ruby><ruby>索<rt>さく</rt></ruby>
                 </button>
             </div>
+            <p style="font-size: 14px; color: #666; margin-top: 5px;">
+                📱 <strong><ruby>音声<rt>おんせい</rt></ruby><ruby>入力<rt>にゅうりょく</rt></ruby>ボタンが<ruby>反応<rt>はんのう</rt></ruby>しない<ruby>場合<rt>ばあい</rt></ruby></strong>：<ruby>入力窓<rt>にゅうりょくまど</rt></ruby>をタップ→キーボードの🎤ボタンで<ruby>音声<rt>おんせい</rt></ruby><ruby>入力<rt>にゅうりょく</rt></ruby>できます
+            </p>
             <p style="font-size: 14px; color: #666; margin-top: 10px;">
                 💡 <ruby>検索<rt>けんさく</rt></ruby><ruby>結果<rt>けっか</rt></ruby>は<ruby>新<rt>あたら</rt></ruby>しいタブで<ruby>開<rt>ひら</rt></ruby>きます。<ruby>結果<rt>けっか</rt></ruby>をコピーして<ruby>下<rt>した</rt></ruby>の「ルビ<ruby>振<rt>ふ</rt></ruby>り」で<ruby>使<rt>つか</rt></ruby>えます。
             </p>
@@ -52,14 +55,14 @@
                 <span class="mobile-text" style="display: none;"><ruby>単語<rt>たんご</rt></ruby>の<ruby>意味<rt>いみ</rt></ruby><ruby>調<rt>しら</rt></ruby>べ</span>
             </h2>
             <div class="input-group">
-                <input type="text" id="dictInput" placeholder="意味(いみ)を知(し)りたい単語(たんご)を入力(にゅうりょく)してください">
+                <input type="text" id="dictInput" inputmode="verbatim" placeholder="意味(いみ)を知(し)りたい単語(たんご)を入力(にゅうりょく)してください">
             </div>
             <div class="dict-buttons">
                 <button class="btn btn-voice" onclick="startVoiceDict()" id="voiceDictBtn" title="音声入力">
                     <ruby>🎤<rt></rt></ruby> <ruby>音<rt>おん</rt></ruby><ruby>声<rt>せい</rt></ruby><ruby>入<rt>にゅう</rt></ruby><ruby>力<rt>りょく</rt></ruby>
                 </button>
                 <button class="btn" onclick="searchWeblio()">
-                    <ruby>📚<rt></rt></ruby> <ruby>W<rt></rt></ruby><ruby>e<rt></rt></ruby><ruby>b<rt></rt></ruby><ruby>l<rt></rt></ruby><ruby>i<rt></rt></ruby><ruby>o<rt></rt></ruby><ruby>辞<rt>じ</rt></ruby><ruby>書<rt>しょ</rt></ruby>
+                    <ruby>📚<rt></rt></ruby> <ruby>Weblio<rt>ウェブリオ</rt></ruby><ruby>辞書<rt>じしょ</rt></ruby>
                 </button>
                 <button class="btn btn-secondary" onclick="searchGakken()">
                     <ruby>🏫<rt></rt></ruby> <ruby>学<rt>がく</rt></ruby><ruby>研<rt>けん</rt></ruby><ruby>辞<rt>じ</rt></ruby><ruby>書<rt>しょ</rt></ruby>
@@ -69,6 +72,9 @@
                 </button>
             </div>
             <div id="dictResult" class="result-box"></div>
+            <p style="font-size: 14px; color: #666; margin-top: 5px;">
+                📱 <strong><ruby>音声<rt>おんせい</rt></ruby><ruby>入力<rt>にゅうりょく</rt></ruby>ボタンが<ruby>反応<rt>はんのう</rt></ruby>しない<ruby>場合<rt>ばあい</rt></ruby></strong>：<ruby>入力窓<rt>にゅうりょくまど</rt></ruby>をタップ→キーボードの🎤ボタンで<ruby>音声<rt>おんせい</rt></ruby><ruby>入力<rt>にゅうりょく</rt></ruby>できます
+            </p>
             <p style="font-size: 14px; color: #666; margin-top: 10px;">
                 💡 <strong><ruby>Weblio<rt>ウェブリオ</rt></ruby><ruby>辞書<rt>じしょ</rt></ruby></strong>：<ruby>詳<rt>くわ</rt></ruby>しい<ruby>説明<rt>せつめい</rt></ruby>が<ruby>見<rt>み</rt></ruby>つかります（<ruby>新<rt>あたら</rt></ruby>しいタブで<ruby>開<rt>ひら</rt></ruby>きます）<br>
                 💡 <strong><ruby>学研<rt>がくけん</rt></ruby><ruby>辞書<rt>じしょ</rt></ruby></strong>：<ruby>子<rt>こ</rt></ruby>ども<ruby>向<rt>む</rt></ruby>けの<ruby>やさしい<rt>やさしい</rt></ruby><ruby>説明<rt>せつめい</rt></ruby>（<ruby>新<rt>あたら</rt></ruby>しいタブで<ruby>開<rt>ひら</rt></ruby>きます）
@@ -85,20 +91,30 @@
             
             <!-- 🆕 学年選択セクション -->
             <div class="grade-selector">
-                <label for="gradeSelect">📚 <ruby>学年<rt>がくねん</rt></ruby><ruby>設定<rt>せってい</rt></ruby>：</label>
+                <label for="gradeSelect">📚 <ruby>何年生<rt>なんねんせい</rt></ruby><ruby>以上<rt>いじょう</rt></ruby>の<ruby>漢字<rt>かんじ</rt></ruby>にルビをつけますか？</label>
                 <select id="gradeSelect">
-                    <option value="">学年(がくねん)を選択(せんたく)してください（全(ぜん)ルビで処理(しょり)されます）</option>
-                    <option value="1">小学(しょうがく)1年生(ねんせい)レベル（ほとんどの漢字(かんじ)にルビ）</option>
-                    <option value="2">小学(しょうがく)2年生(ねんせい)レベル</option>
-                    <option value="3">小学(しょうがく)3年生(ねんせい)レベル</option>
-                    <option value="4">小学(しょうがく)4年生(ねんせい)レベル</option>
-                    <option value="5">小学(しょうがく)5年生(ねんせい)レベル</option>
-                    <option value="6">小学(しょうがく)6年生(ねんせい)レベル（おすすめ）</option>
-                    <option value="8">中学生(ちゅうがくせい)レベル（難(むずか)しい漢字(かんじ)のみルビ）</option>
+                    <option value="">学年(がくねん)を選択(せんたく)してください</option>
+                    <option value="1">小1(しょういち)</option>
+                    <option value="2">小2(しょうに)</option>
+                    <option value="3">小3(しょうさん)</option>
+                    <option value="4">小4(しょうよん)</option>
+                    <option value="5">小5(しょうご)</option>
+                    <option value="6">小6(しょうろく)（おすすめ）</option>
+                    <option value="8">中学以上(ちゅうがくいじょう)</option>
                 </select>
             </div>
             
-            <textarea id="rubyInput" rows="8" placeholder="ここに文章(ぶんしょう)をコピー&ペーストしてください。検索結果(けんさくけっか)やニュース、教科書(きょうかしょ)、論文(ろんぶん)など何でもOK！最大(さいだい)2000文字(もじ)まで処理(しょり)できます。段落構造(だんらくこうぞう)も自動(じどう)で保持(ほじ)されます。"></textarea>
+            
+            <div style="font-size: 16px; color: #555; margin-bottom: 15px; line-height: 1.8; background: #f8f9ff; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0;">
+                <div style="margin-bottom: 8px;">📝 <strong>ここに<ruby>文章<rt>ぶんしょう</rt></ruby>をコピー&ペーストしてください</strong></div>
+                <div style="margin-left: 15px; font-size: 15px;">
+                    ・<ruby>検索<rt>けんさく</rt></ruby><ruby>結果<rt>けっか</rt></ruby>や<ruby>ニュース<rt>ニュース</rt></ruby>、<ruby>自分<rt>じぶん</rt></ruby>で<ruby>打<rt>う</rt></ruby>ち<ruby>込<rt>こ</rt></ruby>むなど<ruby>何<rt>なん</rt></ruby>でもOK！<br>
+                    ・<ruby>最大<rt>さいだい</rt></ruby>2000<ruby>文字<rt>もじ</rt></ruby><ruby>程度<rt>ていど</rt></ruby>まで<ruby>処理<rt>しょり</rt></ruby><br>
+                    ・<ruby>読<rt>よ</rt></ruby>み<ruby>上<rt>あ</rt></ruby>げや<ruby>ルビ<rt>ルビ</rt></ruby><ruby>付<rt>つ</rt></ruby>きの<ruby>文章<rt>ぶんしょう</rt></ruby>を<ruby>コピー<rt>コピー</rt></ruby>もできるよ<br>
+                    ・<ruby>改行<rt>かいぎょう</rt></ruby>して<ruby>書<rt>か</rt></ruby>くと、<ruby>読<rt>よ</rt></ruby>み<ruby>上<rt>あ</rt></ruby>げで<ruby>間<rt>ま</rt></ruby>ができて<ruby>聞<rt>き</rt></ruby>きやすいよ
+                </div>
+            </div>
+            <textarea id="rubyInput" rows="8" placeholder=""></textarea>
             <div class="ruby-buttons">
                 <button class="btn" onclick="addRuby()" id="rubyBtn">
                     <ruby>✨<rt></rt></ruby> <ruby>ル<rt></rt></ruby><ruby>ビ<rt></rt></ruby><ruby>を<rt></rt></ruby><ruby>つ<rt></rt></ruby><ruby>け<rt></rt></ruby><ruby>る<rt></rt></ruby>

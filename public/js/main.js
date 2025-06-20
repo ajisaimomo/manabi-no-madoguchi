@@ -521,6 +521,26 @@ function showCopySuccess(type) {
     }, 4000);
 }
 
+// ルビON/OFF切り替え機能
+function toggleRuby() {
+    const body = document.body;
+    const btnText = document.getElementById('ruby-btn-text');
+    
+    if (body.classList.contains('no-ruby')) {
+        // ルビを表示する
+        body.classList.remove('no-ruby');
+        btnText.textContent = 'ルビON';
+        if (DEBUG) console.log('🔤 ルビ表示モード');
+        showNotification('✅ ルビを表示しました', 'success');
+    } else {
+        // ルビを非表示にする
+        body.classList.add('no-ruby');
+        btnText.textContent = 'ルビOFF';
+        if (DEBUG) console.log('🔡 ルビ非表示モード');
+        showNotification('❌ ルビを非表示にしました', 'info');
+    }
+}
+
 document.addEventListener('keydown', (e) => {
     if (e.ctrlKey || e.metaKey) {
         switch (e.key) {
@@ -557,24 +577,3 @@ window.addEventListener('load', () => {
     
     document.getElementById('searchInput').focus();
 });
-
-
-// ルビON/OFF切り替え機能
-        function toggleRuby() {
-            const body = document.body;
-            const btnText = document.getElementById('ruby-btn-text');
-            
-            if (body.classList.contains('no-ruby')) {
-                // ルビを表示する
-                body.classList.remove('no-ruby');
-                btnText.textContent = 'よみやすく';
-                if (DEBUG) console.log('🔤 ルビ表示モード');
-                showNotification('📚 ルビ表示モードになりました', 'success');
-            } else {
-                // ルビを非表示にする
-                body.classList.add('no-ruby');
-                btnText.textContent = 'シンプル';
-                if (DEBUG) console.log('🔡 ルビ非表示モード');
-                showNotification('📖 シンプルモードになりました', 'info');
-            }
-        }

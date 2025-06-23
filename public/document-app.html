@@ -276,6 +276,8 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
             transform: translateX(400px);
             transition: transform 0.3s ease;
+            max-width: 350px;
+            line-height: 1.6;
         }
         
         .notification.show {
@@ -284,6 +286,17 @@
         
         .notification.error {
             background: #f56565;
+        }
+        
+        .notification ruby {
+            ruby-align: start;
+            ruby-position: over;
+        }
+        
+        .notification ruby rt {
+            font-size: 8px;
+            color: rgba(255,255,255,0.8);
+            font-weight: normal;
         }
         
         /* プレビューモーダル */
@@ -670,7 +683,7 @@
         // 初期文字数カウント
         updateCharCount();
         
-        // 通知表示
+        // 通知表示（HTML対応版）
         function showNotification(message, isError = false) {
             // 既存の通知を削除
             const existingNotification = document.querySelector('.notification');
@@ -680,7 +693,14 @@
             
             const notification = document.createElement('div');
             notification.className = `notification ${isError ? 'error' : ''}`;
-            notification.textContent = message;
+            
+            // HTMLメッセージの場合とテキストメッセージの場合を判定
+            if (message.includes('<ruby>') || message.includes('<br>')) {
+                notification.innerHTML = message;
+            } else {
+                notification.textContent = message;
+            }
+            
             document.body.appendChild(notification);
             
             // アニメーション表示
@@ -690,7 +710,7 @@
             setTimeout(() => {
                 notification.classList.remove('show');
                 setTimeout(() => notification.remove(), 300);
-            }, 3000);
+            }, 4000); // ルビ付きなので少し長めに表示
         }
         
         // ファイル読み込み機能
@@ -863,7 +883,7 @@ ${content}
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
                 
-                showNotification(`💾 ${filename}.html を保存しました`);
+                showNotification(`💾 <ruby>保<rt>ほ</rt></ruby><ruby>存<rt>ぞん</rt></ruby>するファイル<ruby>名<rt>めい</rt></ruby>: 「${filename}.html」<br><br><ruby>変<rt>へん</rt></ruby><ruby>更<rt>こう</rt></ruby>したい<ruby>場<rt>ば</rt></ruby><ruby>合<rt>あい</rt></ruby>は<ruby>右<rt>みぎ</rt></ruby><ruby>上<rt>うえ</rt></ruby>のテキストボックスで<ruby>編<rt>へん</rt></ruby><ruby>集<rt>しゅう</rt></ruby>できます`);
                 updateLastSaved();
                 
             } catch (error) {

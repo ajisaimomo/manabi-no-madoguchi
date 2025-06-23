@@ -212,17 +212,8 @@
                 page-break-inside: avoid;
             }
             
-            .editor ruby {
-                display: ruby !important;
-                ruby-position: over !important;
-                ruby-align: center !important;
-            }
-            
             .editor ruby rt {
-                display: ruby-text !important;
                 font-size: 5.5pt;
-                line-height: 1.0 !important;
-                color: #666 !important;
             }
             
             .editor p {
@@ -541,61 +532,6 @@
         
         .preview-btn.secondary {
             background: linear-gradient(45deg, #48bb78, #38a169);
-        }
-        
-        /* 🚨 CRITICAL: iPad Safari ruby強制修正 */
-        @media screen and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 1) {
-            .editor ruby {
-                display: ruby !important;
-                ruby-position: over !important;
-                ruby-align: center !important;
-                line-height: 2.4 !important;
-                writing-mode: horizontal-tb !important;
-            }
-            
-            .editor ruby rt {
-                display: ruby-text !important;
-                font-size: 0.5em !important;
-                line-height: 1.0 !important;
-                color: #666 !important;
-                text-align: center !important;
-            }
-            
-            .preview-page ruby {
-                display: ruby !important;
-                ruby-position: over !important;
-                ruby-align: center !important;
-            }
-            
-            .preview-page ruby rt {
-                display: ruby-text !important;
-                font-size: 0.45em !important;
-                line-height: 1.0 !important;
-            }
-            
-            .notification ruby {
-                display: ruby !important;
-                ruby-position: over !important;
-            }
-            
-            .notification ruby rt {
-                display: ruby-text !important;
-                font-size: 0.5em !important;
-            }
-        }
-        
-        /* Safari特有のバグ対策（追加保険） */
-        @supports (-webkit-touch-callout: none) {
-            .editor ruby {
-                display: ruby !important;
-                ruby-position: over !important;
-            }
-            
-            .editor ruby rt {
-                display: ruby-text !important;
-                font-size: 0.5em !important;
-                line-height: 1.0 !important;
-            }
         }
     </style>
 </head>
@@ -1042,12 +978,10 @@
             color: #333;
         }
         ruby {
-            display: ruby !important;
             ruby-align: start;
-            ruby-position: over !important;
+            ruby-position: over;
         }
         ruby rt {
-            display: ruby-text !important;
             font-size: 7px;
             color: #666;
             font-weight: normal;
@@ -1060,7 +994,7 @@
             color: #444;
         }
         
-        /* A4印刷最適化 + iPad対応 */
+        /* A4印刷最適化 */
         @media print {
             body {
                 font-size: 11pt;
@@ -1068,12 +1002,7 @@
                 padding: 20mm 15mm;
                 max-width: none;
             }
-            ruby {
-                display: ruby !important;
-                ruby-position: over !important;
-            }
             ruby rt {
-                display: ruby-text !important;
                 font-size: 5.5pt;
             }
             p {
@@ -1085,19 +1014,6 @@
             @page {
                 size: A4;
                 margin: 20mm 15mm;
-            }
-        }
-        
-        /* iPad対応 */
-        @media screen and (max-device-width: 1024px) {
-            ruby {
-                display: ruby !important;
-                ruby-position: over !important;
-                ruby-align: center !important;
-            }
-            ruby rt {
-                display: ruby-text !important;
-                font-size: 0.5em !important;
             }
         }
     </style>
@@ -1284,12 +1200,10 @@ ${content}
             color: #333;
         }
         ruby {
-            display: ruby !important;
             ruby-align: start;
-            ruby-position: over !important;
+            ruby-position: over;
         }
         ruby rt {
-            display: ruby-text !important;
             font-size: 5.5pt;
             color: #666;
             font-weight: normal;

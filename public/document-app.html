@@ -299,7 +299,108 @@
             font-weight: normal;
         }
         
-        /* プレビューモーダル */
+        /* 保存確認ダイアログ */
+        .save-confirm-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 3000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .save-confirm-modal.show {
+            display: flex;
+        }
+        
+        .save-confirm-content {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 450px;
+            width: 100%;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+        
+        .save-confirm-header {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .save-confirm-message {
+            font-size: 16px;
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 25px;
+        }
+        
+        .save-confirm-filename {
+            background: #f8f9ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-size: 18px;
+            font-weight: bold;
+            color: #667eea;
+            border: 2px solid #e2e8f0;
+        }
+        
+        .save-confirm-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+        
+        .save-confirm-btn {
+            padding: 12px 25px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 100px;
+        }
+        
+        .save-confirm-btn.primary {
+            background: linear-gradient(45deg, #48bb78, #38a169);
+            color: white;
+        }
+        
+        .save-confirm-btn.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(72, 187, 120, 0.3);
+        }
+        
+        .save-confirm-btn.secondary {
+            background: #f7fafc;
+            color: #4a5568;
+            border: 2px solid #e2e8f0;
+        }
+        
+        .save-confirm-btn.secondary:hover {
+            background: #edf2f7;
+            border-color: #cbd5e0;
+        }
+        
+        .save-confirm-content ruby {
+            ruby-align: start;
+            ruby-position: over;
+        }
+        
+        .save-confirm-content ruby rt {
+            font-size: 8px;
+            color: #666;
+            font-weight: normal;
+        }
         .preview-modal {
             position: fixed;
             top: 0;
@@ -485,6 +586,33 @@
             </div>
             <div class="last-saved">
                 <ruby>最<rt>さい</rt></ruby><ruby>終<rt>しゅう</rt></ruby><ruby>更<rt>こう</rt></ruby><ruby>新<rt>しん</rt></ruby>: <span id="lastSaved"><ruby>未<rt>み</rt></ruby><ruby>保<rt>ほ</rt></ruby><ruby>存<rt>ぞん</rt></ruby></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 保存確認ダイアログ -->
+    <div id="saveConfirmModal" class="save-confirm-modal">
+        <div class="save-confirm-content">
+            <div class="save-confirm-header">
+                💾 <ruby>保<rt>ほ</rt></ruby><ruby>存<rt>ぞん</rt></ruby><ruby>確<rt>かく</rt></ruby><ruby>認<rt>にん</rt></ruby>
+            </div>
+            <div class="save-confirm-message">
+                <ruby>以<rt>い</rt></ruby><ruby>下<rt>か</rt></ruby>のファイル<ruby>名<rt>めい</rt></ruby>で<ruby>保<rt>ほ</rt></ruby><ruby>存<rt>ぞん</rt></ruby>しますか？
+            </div>
+            <div class="save-confirm-filename" id="confirmFilename">
+                <!-- ファイル名がここに表示される -->
+            </div>
+            <div class="save-confirm-message">
+                <ruby>違<rt>ちが</rt></ruby>う<ruby>名<rt>な</rt></ruby><ruby>前<rt>まえ</rt></ruby>にしたい<ruby>場<rt>ば</rt></ruby><ruby>合<rt>あい</rt></ruby>は「キャンセル」を<ruby>押<rt>お</rt></ruby>して<br>
+                <ruby>右<rt>みぎ</rt></ruby><ruby>上<rt>うえ</rt></ruby>のファイル<ruby>名<rt>めい</rt></ruby>を<ruby>変<rt>へん</rt></ruby><ruby>更<rt>こう</rt></ruby>してください
+            </div>
+            <div class="save-confirm-buttons">
+                <button class="save-confirm-btn primary" onclick="confirmSave()">
+                    💾 <ruby>保<rt>ほ</rt></ruby><ruby>存<rt>ぞん</rt></ruby>
+                </button>
+                <button class="save-confirm-btn secondary" onclick="cancelSave()">
+                    ✖️ キャンセル
+                </button>
             </div>
         </div>
     </div>
@@ -796,6 +924,9 @@
             showNotification('📄 新規ドキュメントを作成しました');
         }
         
+        // 保存確認関連の変数
+        let pendingSaveData = null;
+        
         // ドキュメント保存
         function saveDocument() {
             try {
@@ -808,6 +939,26 @@
                     return;
                 }
                 
+                // 保存データを一時保存
+                pendingSaveData = { filename, content };
+                
+                // 確認ダイアログ表示
+                document.getElementById('confirmFilename').textContent = filename + '.html';
+                document.getElementById('saveConfirmModal').classList.add('show');
+                document.body.style.overflow = 'hidden';
+                
+            } catch (error) {
+                showNotification('保存に失敗しました', true);
+            }
+        }
+        
+        // 保存実行
+        function confirmSave() {
+            if (!pendingSaveData) return;
+            
+            const { filename, content } = pendingSaveData;
+            
+            try {
                 // A4印刷最適化HTML
                 const html = `<!DOCTYPE html>
 <html lang="ja">
@@ -883,12 +1034,23 @@ ${content}
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
                 
-                showNotification(`💾 <ruby>保<rt>ほ</rt></ruby><ruby>存<rt>ぞん</rt></ruby>するファイル<ruby>名<rt>めい</rt></ruby>: 「${filename}.html」<br><br><ruby>変<rt>へん</rt></ruby><ruby>更<rt>こう</rt></ruby>したい<ruby>場<rt>ば</rt></ruby><ruby>合<rt>あい</rt></ruby>は<ruby>右<rt>みぎ</rt></ruby><ruby>上<rt>うえ</rt></ruby>のテキストボックスで<ruby>編<rt>へん</rt></ruby><ruby>集<rt>しゅう</rt></ruby>できます`);
+                // ダイアログを閉じる
+                cancelSave();
+                
+                showNotification(`💾 <ruby>保<rt>ほ</rt></ruby><ruby>存<rt>ぞん</rt></ruby>しました: 「${filename}.html」`);
                 updateLastSaved();
                 
             } catch (error) {
+                cancelSave();
                 showNotification('保存に失敗しました', true);
             }
+        }
+        
+        // 保存キャンセル
+        function cancelSave() {
+            document.getElementById('saveConfirmModal').classList.remove('show');
+            document.body.style.overflow = 'auto';
+            pendingSaveData = null;
         }
         
         // 印刷プレビュー表示
@@ -1000,10 +1162,11 @@ ${content}
             }
         });
         
-        // ESCキーでプレビュー閉じる
+        // ESCキーでプレビュー・保存確認を閉じる
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 closePrintPreview();
+                cancelSave();
             }
         });
         

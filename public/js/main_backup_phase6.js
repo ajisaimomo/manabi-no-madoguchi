@@ -3,7 +3,6 @@ let currentDictResult = '';
 let recognition = null;
 let isRecognizing = false;
 let currentVoiceTarget = 'search';
-let documentWindow = null; // 🆕 ドキュメントウィンドウ管理用
 
 const API_BASE = window.location.hostname === 'localhost' 
     ? 'http://localhost:3000'
@@ -12,31 +11,6 @@ const API_BASE = window.location.hostname === 'localhost'
 const DEBUG = window.location.hostname === 'localhost';
 if (DEBUG) {
     console.log(`🌐 API Base URL: ${API_BASE}`);
-}
-
-// 🆕 ドキュメントアプリを開く関数
-function openDocumentApp() {
-    try {
-        if (!documentWindow || documentWindow.closed) {
-            documentWindow = window.open(
-                'document-app.html', 
-                'documentApp',
-                'width=1024,height=768,scrollbars=yes,resizable=yes,location=no,menubar=no,toolbar=no'
-            );
-            
-            if (documentWindow) {
-                showNotification('📱 ドキュメントアプリを開きました！\nルビ付きの文章をコピーして貼り付けてください', 'success');
-            } else {
-                throw new Error('ポップアップがブロックされました');
-            }
-        } else {
-            documentWindow.focus();
-            showNotification('📱 ドキュメントアプリに移動しました', 'info');
-        }
-    } catch (error) {
-        console.error('ドキュメントアプリ起動エラー:', error);
-        showNotification('❌ ドキュメントアプリを開けませんでした\nポップアップブロックを無効にしてください', 'error');
-    }
 }
 
 function initVoiceRecognition() {
@@ -285,7 +259,6 @@ async function addRuby() {
     const resultDiv = document.getElementById('rubyResult');
     const rubyBtn = document.getElementById('rubyBtn');
     const copyBtn = document.getElementById('copyBtn');
-    const documentBtn = document.getElementById('documentBtn'); // 🆕
     
     // 段落構造検出
     const hasParagraphs = text.includes('\n') || /[◆●▲■♦]/.test(text);
@@ -304,7 +277,6 @@ async function addRuby() {
     `;
     rubyBtn.disabled = true;
     copyBtn.style.display = 'none';
-    documentBtn.style.display = 'none'; // 🆕 処理中は非表示
     
     try {
         if (DEBUG) console.log(`🌐 Yahoo! API呼び出し: ${API_BASE}/api/ruby-yahoo (学年: ${grade})`);
@@ -347,7 +319,6 @@ async function addRuby() {
             copyBtn.style.display = 'flex';
             document.getElementById('speakBtn').style.display = 'flex';
             document.getElementById('stopBtn').style.display = 'flex';
-            documentBtn.style.display = 'flex'; // 🆕 ルビ振り完了時に表示
             if (DEBUG) console.log(`✨ Yahoo! API ルビ振り完了: ${data.segmentCount}セグメント (学年: ${data.grade}, 段落モード: ${data.paragraphMode})`);
         } else {
             throw new Error(data.error || 'ルビ振り処理でエラーが発生しました');
@@ -385,7 +356,6 @@ function clearRuby() {
     document.getElementById('copyBtn').style.display = 'none';
     document.getElementById('speakBtn').style.display = 'none';
     document.getElementById('stopBtn').style.display = 'none';
-    document.getElementById('documentBtn').style.display = 'none'; // 🆕 ドキュメントボタンも非表示
     // 🆕 学年選択もリセット
     document.getElementById('gradeSelect').value = '';
     currentRubyResult = '';
@@ -598,17 +568,11 @@ document.addEventListener('keydown', (e) => {
 
 window.addEventListener('load', () => {
     if (DEBUG) {
-        console.log('📚 調べる窓口 v6.0 - Phase 6: ドキュメント連携機能付き完全版準備完了！');
+        console.log('📚 調べる窓口 v5.0 - 学年選択機能付き完全版準備完了！');
         console.log(`🌐 動作環境: ${API_BASE === window.location.origin ? 'Vercel本番' : 'ローカル開発'}`);
         console.log(`🔌 API接続先: ${API_BASE}/api/ruby-yahoo`);
         console.log('🆕 学年選択機能: Yahoo! API gradeパラメータ対応');
-        console.log('📱 ドキュメント連携機能: document-app.html連携追加');
         console.log('⌨️  ショートカット: Ctrl+Enter=実行, Ctrl+C=コピー');
-    }
-    
-    // 🆕 Edge/Chrome推奨の案内（プロレビュー対応）
-    if (navigator.userAgent.includes('Safari') && !navigator.userAgent.includes('Chrome')) {
-        console.log('⚠️ Safari検出: Word最適化HTMLコピーはEdge/Chrome推奨');
     }
     
     document.getElementById('searchInput').focus();

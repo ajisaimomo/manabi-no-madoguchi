@@ -269,6 +269,23 @@ textarea:focus {
     justify-content: center;
 }
 
+/* 🆕 ドキュメントボタン専用スタイル */
+.btn-document {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    border: 2px solid #5a67d8;
+    box-shadow: 0 0 0 1px rgba(90, 103, 216, 0.2);
+}
+
+.btn-document:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(90, 103, 216, 0.5);
+    border-color: #4c51bf;
+}
+
+.btn-document:active {
+    transform: translateY(-1px);
+}
+
 .btn ruby {
     ruby-align: start;
     ruby-position: over;

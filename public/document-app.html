@@ -432,6 +432,9 @@
             <button class="btn" onclick="newDocument()">
                 📄 <ruby>新<rt>しん</rt></ruby><ruby>規<rt>き</rt></ruby><ruby>作<rt>さく</rt></ruby><ruby>成<rt>せい</rt></ruby>
             </button>
+            <button class="btn btn-secondary" onclick="loadDocument()">
+                📁 ファイル<ruby>読<rt>よ</rt></ruby>み<ruby>込<rt>こ</rt></ruby>み
+            </button>
             <button class="btn btn-secondary" onclick="saveDocument()">
                 💾 <ruby>保<rt>ほ</rt></ruby><ruby>存<rt>ぞん</rt></ruby>
             </button>
@@ -443,6 +446,9 @@
             </button>
             <button class="btn btn-danger" onclick="clearDocument()">
                 🗑️ <ruby>消<rt>しょう</rt></ruby><ruby>去<rt>きょ</rt></ruby>
+            </button>
+            <button class="btn" onclick="openHelp()">
+                ❓ <ruby>使<rt>つか</rt></ruby>い<ruby>方<rt>かた</rt></ruby>
             </button>
             
             <div class="filename-group">
@@ -685,6 +691,77 @@
                 notification.classList.remove('show');
                 setTimeout(() => notification.remove(), 300);
             }, 3000);
+        }
+        
+        // ファイル読み込み機能
+        function loadDocument() {
+            // ファイル選択用input要素を作成
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.accept = '.html';
+            fileInput.style.display = 'none';
+            
+            fileInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                // ファイル読み込み確認
+                if (!confirm(`📁 「${file.name}」を読み込みますか？\n\n現在の内容は消去されます。\n\n✅ OK = 読み込む\n❌ キャンセル = 取り消し`)) {
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    try {
+                        const htmlContent = event.target.result;
+                        
+                        // HTMLからbody部分を抽出
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = htmlContent;
+                        
+                        // body要素を探す
+                        let bodyContent = '';
+                        const bodyElement = tempDiv.querySelector('body');
+                        if (bodyElement) {
+                            bodyContent = bodyElement.innerHTML;
+                        } else {
+                            // bodyタグがない場合は全体を使用
+                            bodyContent = htmlContent;
+                        }
+                        
+                        // 不要なタグを除去（安全性のため）
+                        const cleanDiv = document.createElement('div');
+                        cleanDiv.innerHTML = bodyContent;
+                        
+                        // 危険なタグを除去
+                        ['script', 'style', 'link', 'meta', 'head', 'title'].forEach(tag => {
+                            cleanDiv.querySelectorAll(tag).forEach(el => el.remove());
+                        });
+                        
+                        // エディタに内容を設定
+                        editor.innerHTML = cleanDiv.innerHTML;
+                        editor.classList.remove('empty');
+                        
+                        // ファイル名を設定（拡張子を除去）
+                        const fileName = file.name.replace(/\.[^/.]+$/, '');
+                        document.getElementById('filename').value = fileName;
+                        
+                        updateCharCount();
+                        updateLastSaved();
+                        showNotification(`📁 「${file.name}」を読み込みました`);
+                        
+                    } catch (error) {
+                        showNotification('ファイルの読み込みに失敗しました', true);
+                    }
+                };
+                
+                reader.readAsText(file, 'UTF-8');
+            });
+            
+            // ファイル選択ダイアログを開く
+            document.body.appendChild(fileInput);
+            fileInput.click();
+            document.body.removeChild(fileInput);
         }
         
         // 新規作成
@@ -997,6 +1074,11 @@ ${content}
             updateCharCount();
             showNotification('🗑️ ドキュメントを消去しました');
             setTimeout(() => editor.focus(), 100);
+        }
+        
+        // 使い方ガイドを開く
+        function openHelp() {
+            window.open('help.html', 'helpWindow', 'width=900,height=700,scrollbars=yes');
         }
         
         // 初期化処理

@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📄 学習ドキュメント作成</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'BIZ UDPゴシック', 'Yu Gothic UI', 'Meiryo UI', 'Hiragino Sans', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 10px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            min-height: calc(100vh - 20px);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        
+        .toolbar {
+            background: #f8f9ff;
+            padding: 15px 20px;
+            border-bottom: 2px solid #e2e8f0;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        
+        .btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            min-height: 40px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(45deg, #48bb78, #38a169);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(45deg, #fc8181, #f56565);
+        }
+        
+        .filename-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-left: auto;
+        }
+        
+        .filename-input {
+            padding: 8px 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 14px;
+            width: 200px;
+        }
+        
+        .editor-container {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .editor {
+            flex: 1;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 20px;
+            font-size: 16px;
+            line-height: 2.2;
+            min-height: 500px;
+            outline: none;
+            transition: border-color 0.3s ease;
+            overflow-y: auto;
+            position: relative;
+        }
+        
+        .editor:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .editor p {
+            margin-bottom: 1em;
+        }
+        
+        .editor ruby {
+            ruby-align: start;
+            ruby-position: over;
+        }
+        
+        .editor ruby rt {
+            font-size: 8px;
+            color: #666;
+            font-weight: normal;
+        }
+        
+        /* プレースホルダースタイル */
+        .editor.empty::before {
+            content: "📚 学習(がくしゅう)ドキュメント\A\A作成日(さくせいび): " attr(data-date) "\A\Aここをクリックして文章(ぶんしょう)を書(か)こう！\A\A💡 かんたんな使(つか)い方(かた):\A① 調(しら)べる窓口(まどぐち)でコピー\A② ここに貼(は)り付(つ)け\A③ 保存(ほぞん)・印刷(いんさつ)";
+            white-space: pre-line;
+            color: #999;
+            font-style: italic;
+            pointer-events: none;
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            line-height: 2.2;
+            font-size: 15px;
+        }
+        
+        .status-bar {
+            background: #f8f9ff;
+            padding: 10px 20px;
+            border-top: 1px solid #e2e8f0;
+            font-size: 12px;
+            color: #666;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .word-count {
+            font-weight: 600;
+        }
+        
+        .a4-info {
+            font-size: 11px;
+            color: #888;
+            display: flex;
+            gap: 15px;
+        }
+        
+        .last-saved {
+            font-style: italic;
+        }
+        
+        /* A4印刷最適化 */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+                font-size: 11pt;
+            }
+            
+            .container {
+                box-shadow: none;
+                border-radius: 0;
+                min-height: auto;
+                max-width: none;
+            }
+            
+            .header, .toolbar, .status-bar {
+                display: none;
+            }
+            
+            .editor-container {
+                padding: 0;
+            }
+            
+            .editor {
+                border: none;
+                box-shadow: none;
+                min-height: auto;
+                font-size: 11pt;
+                line-height: 1.8;
+                padding: 20mm 15mm;
+                page-break-inside: avoid;
+            }
+            
+            .editor ruby rt {
+                font-size: 5.5pt;
+            }
+            
+            .editor p {
+                margin-bottom: 0.8em;
+                page-break-inside: avoid;
+                orphans: 2;
+                widows: 2;
+            }
+            
+            @page {
+                size: A4;
+                margin: 20mm 15mm;
+            }
+        }
+        
+        /* モバイル対応 */
+        @media (max-width: 768px) {
+            .container {
+                margin: 0;
+                border-radius: 0;
+                min-height: 100vh;
+            }
+            
+            .toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .filename-group {
+                margin-left: 0;
+                justify-content: stretch;
+            }
+            
+            .filename-input {
+                width: 100%;
+            }
+            
+            .btn {
+                justify-content: center;
+                width: 100%;
+            }
+            
+            .a4-info {
+                flex-direction: column;
+                gap: 5px;
+            }
+        }
+        
+        /* 通知スタイル */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #48bb78;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            font-weight: bold;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification.error {
+            background: #f56565;
+        }
+        
+        /* プレビューモーダル */
+        .preview-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .preview-modal.show {
+            display: flex;
+        }
+        
+        .preview-content {
+            background: white;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 800px;
+            height: 90%;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        
+        .preview-header {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px 10px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .preview-header h3 {
+            margin: 0;
+            font-size: 18px;
+        }
+        
+        .preview-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .preview-close:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .preview-body {
+            flex: 1;
+            padding: 10px;
+            overflow-y: auto;
+            background: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+        
+        .preview-page {
+            width: 210mm;
+            min-height: 297mm;
+            margin: 20px auto;
+            padding: 20mm 15mm;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            background: white;
+            font-family: 'BIZ UDPゴシック', 'Yu Gothic UI', 'Meiryo UI', 'Hiragino Sans', sans-serif;
+            font-size: 11pt;
+            line-height: 1.8;
+            color: #333;
+            box-sizing: border-box;
+            transform: scale(0.6);
+            transform-origin: top center;
+        }
+        
+        .preview-page ruby {
+            ruby-align: start;
+            ruby-position: over;
+        }
+        
+        .preview-page ruby rt {
+            font-size: 5.5pt;
+            color: #666;
+            font-weight: normal;
+        }
+        
+        .preview-page p {
+            margin-bottom: 0.8em;
+        }
+        
+        .preview-buttons {
+            padding: 15px 20px;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        
+        .preview-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .preview-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        .preview-btn.secondary {
+            background: linear-gradient(45deg, #48bb78, #38a169);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📄 <ruby>学<rt>がく</rt></ruby><ruby>習<rt>しゅう</rt></ruby>ドキュメント<ruby>作<rt>さく</rt></ruby><ruby>成<rt>せい</rt></ruby></h1>
+            <p><ruby>調<rt>しら</rt></ruby>べた<ruby>内<rt>ない</rt></ruby><ruby>容<rt>よう</rt></ruby>をまとめて、<ruby>保<rt>ほ</rt></ruby><ruby>存<rt>ぞん</rt></ruby>・<ruby>印<rt>いん</rt></ruby><ruby>刷<rt>さつ</rt></ruby>しよう</p>
+        </div>
+        
+        <div class="toolbar">
+            <button class="btn" onclick="newDocument()">
+                📄 <ruby>新<rt>しん</rt></ruby><ruby>規<rt>き</rt></ruby><ruby>作<rt>さく</rt></ruby><ruby>成<rt>せい</rt></ruby>
+            </button>
+            <button class="btn btn-secondary" onclick="saveDocument()">
+                💾 <ruby>保<rt>ほ</rt></ruby><ruby>存<rt>ぞん</rt></ruby>
+            </button>
+            <button class="btn" onclick="printDocument()">
+                🖨️ <ruby>印<rt>いん</rt></ruby><ruby>刷<rt>さつ</rt></ruby>
+            </button>
+            <button class="btn" onclick="showPrintPreview()">
+                👀 プレビュー
+            </button>
+            <button class="btn btn-danger" onclick="clearDocument()">
+                🗑️ <ruby>消<rt>しょう</rt></ruby><ruby>去<rt>きょ</rt></ruby>
+            </button>
+            
+            <div class="filename-group">
+                <label for="filename">ファイル<ruby>名<rt>めい</rt></ruby>:</label>
+                <input type="text" id="filename" class="filename-input" value="学習資料" placeholder="ファイル名を入力">
+                <span>.html</span>
+            </div>
+        </div>
+        
+        <div class="editor-container">
+            <div id="editor" class="editor empty" contenteditable="true" data-date=""></div>
+        </div>
+        
+        <div class="status-bar">
+            <div class="word-count">
+                <ruby>文<rt>もじ</rt></ruby><ruby>字<rt>じ</rt></ruby><ruby>数<rt>すう</rt></ruby>: <span id="charCount">0</span><ruby>文<rt>も</rt></ruby><ruby>字<rt>じ</rt></ruby>
+            </div>
+            <div class="a4-info">
+                <span>📄 A4<ruby>用<rt>よう</rt></ruby><ruby>紙<rt>し</rt></ruby><ruby>最<rt>さい</rt></ruby><ruby>適<rt>てき</rt></ruby><ruby>化<rt>か</rt></ruby>済み</span>
+                <span>📏 <ruby>目<rt>め</rt></ruby><ruby>安<rt>やす</rt></ruby>: 1,000-1,500<ruby>文<rt>も</rt></ruby><ruby>字<rt>じ</rt></ruby>/ページ</span>
+            </div>
+            <div class="last-saved">
+                <ruby>最<rt>さい</rt></ruby><ruby>終<rt>しゅう</rt></ruby><ruby>更<rt>こう</rt></ruby><ruby>新<rt>しん</rt></ruby>: <span id="lastSaved"><ruby>未<rt>み</rt></ruby><ruby>保<rt>ほ</rt></ruby><ruby>存<rt>ぞん</rt></ruby></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- プレビューモーダル -->
+    <div id="previewModal" class="preview-modal">
+        <div class="preview-content">
+            <div class="preview-header">
+                <h3>🖨️ 印刷(いんさつ)プレビュー</h3>
+                <button class="preview-close" onclick="closePrintPreview()">×</button>
+            </div>
+            <div class="preview-body">
+                <div id="previewPage" class="preview-page">
+                    <!-- プレビュー内容がここに表示される -->
+                </div>
+            </div>
+            <div class="preview-buttons">
+                <button class="preview-btn secondary" onclick="printFromPreview()">
+                    🖨️ この内容(ないよう)で印刷(いんさつ)
+                </button>
+                <button class="preview-btn" onclick="closePrintPreview()">
+                    ✏️ 編集(へんしゅう)に戻(もど)る
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 今日の日付を設定
+        const today = new Date().toLocaleDateString('ja-JP');
+        document.getElementById('editor').setAttribute('data-date', today);
+        
+        // エディタ参照
+        const editor = document.getElementById('editor');
+        const charCount = document.getElementById('charCount');
+        const lastSaved = document.getElementById('lastSaved');
+        
+        // 文字数カウント更新
+        function updateCharCount() {
+            const text = editor.textContent || editor.innerText || '';
+            charCount.textContent = text.length;
+            
+            // プレースホルダー制御
+            if (text.trim() === '') {
+                editor.classList.add('empty');
+            } else {
+                editor.classList.remove('empty');
+            }
+        }
+        
+        // 更新時間更新
+        function updateLastSaved() {
+            const now = new Date();
+            lastSaved.textContent = now.toLocaleTimeString('ja-JP', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+        
+        // エディタクリック時の処理（プレースホルダー削除）
+        editor.addEventListener('click', () => {
+            if (editor.classList.contains('empty')) {
+                editor.classList.remove('empty');
+                editor.innerHTML = '';
+                editor.focus();
+            }
+        });
+        
+        // エディタフォーカス時の処理
+        editor.addEventListener('focus', () => {
+            if (editor.classList.contains('empty')) {
+                editor.classList.remove('empty');
+                editor.innerHTML = '';
+            }
+        });
+        
+        // エディタの変更を監視
+        editor.addEventListener('input', () => {
+            updateCharCount();
+            updateLastSaved();
+        });
+        
+        // エディタからフォーカスが外れた時
+        editor.addEventListener('blur', () => {
+            const text = editor.textContent || editor.innerText || '';
+            if (text.trim() === '') {
+                editor.classList.add('empty');
+                editor.innerHTML = '';
+            }
+        });
+        
+        // ペースト時の処理（HTML清浄化）
+        editor.addEventListener('paste', (e) => {
+            // プレースホルダーがある場合は削除
+            if (editor.classList.contains('empty')) {
+                editor.classList.remove('empty');
+                editor.innerHTML = '';
+            }
+            
+            // デフォルトの貼り付けを防ぐ
+            e.preventDefault();
+            
+            // クリップボードからデータ取得
+            const clipboardData = e.clipboardData || window.clipboardData;
+            let htmlData = clipboardData.getData('text/html');
+            const textData = clipboardData.getData('text/plain');
+            
+            let cleanedContent = '';
+            
+            if (htmlData) {
+                // HTMLデータの清浄化
+                cleanedContent = cleanHTML(htmlData);
+            } else if (textData) {
+                // プレーンテキストの場合
+                cleanedContent = '<p>' + textData.replace(/\n\n+/g, '</p><p>').replace(/\n/g, '<br>') + '</p>';
+            }
+            
+            if (cleanedContent) {
+                // 現在のカーソル位置に挿入
+                document.execCommand('insertHTML', false, cleanedContent);
+                
+                setTimeout(() => {
+                    updateCharCount();
+                    updateLastSaved();
+                }, 10);
+            }
+        });
+        
+        // HTML清浄化関数（セキュリティ強化版）
+        function cleanHTML(html) {
+            // 一時的なdivで処理
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = html;
+            
+            // 危険なタグを除去
+            ['script', 'iframe', 'style', 'object', 'embed', 'form', 'input', 'button'].forEach(tag => {
+                tempDiv.querySelectorAll(tag).forEach(el => el.remove());
+            });
+            
+            // 不要なクラスを削除
+            const elementsWithClass = tempDiv.querySelectorAll('[class]');
+            elementsWithClass.forEach(element => {
+                // ルビ以外のクラスを削除
+                if (element.tagName.toLowerCase() !== 'ruby' && element.tagName.toLowerCase() !== 'rt') {
+                    element.removeAttribute('class');
+                }
+            });
+            
+            // 不要なスタイルを削除
+            const elementsWithStyle = tempDiv.querySelectorAll('[style]');
+            elementsWithStyle.forEach(element => {
+                element.removeAttribute('style');
+            });
+            
+            // 危険な属性を削除
+            const allElements = tempDiv.querySelectorAll('*');
+            allElements.forEach(element => {
+                ['onclick', 'onload', 'onerror', 'onmouseover', 'onfocus'].forEach(attr => {
+                    element.removeAttribute(attr);
+                });
+            });
+            
+            // 段落関連のdivをpタグに変換
+            const paragraphDivs = tempDiv.querySelectorAll('div.paragraph-content, .paragraph-content');
+            paragraphDivs.forEach(div => {
+                const p = document.createElement('p');
+                p.innerHTML = div.innerHTML;
+                div.parentNode.replaceChild(p, div);
+            });
+            
+            // 段落区切りdivを削除
+            const breakDivs = tempDiv.querySelectorAll('div.paragraph-break, .paragraph-break');
+            breakDivs.forEach(div => {
+                div.remove();
+            });
+            
+            // 残った無意味なdivをpタグに変換
+            const divs = tempDiv.querySelectorAll('div');
+            divs.forEach(div => {
+                if (div.innerHTML.trim()) {
+                    const p = document.createElement('p');
+                    p.innerHTML = div.innerHTML;
+                    div.parentNode.replaceChild(p, div);
+                } else {
+                    div.remove();
+                }
+            });
+            
+            // 空の要素を削除
+            const emptyElements = tempDiv.querySelectorAll('p:empty, br + br');
+            emptyElements.forEach(element => element.remove());
+            
+            return tempDiv.innerHTML;
+        }
+        
+        // 初期文字数カウント
+        updateCharCount();
+        
+        // 通知表示
+        function showNotification(message, isError = false) {
+            // 既存の通知を削除
+            const existingNotification = document.querySelector('.notification');
+            if (existingNotification) {
+                existingNotification.remove();
+            }
+            
+            const notification = document.createElement('div');
+            notification.className = `notification ${isError ? 'error' : ''}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            // アニメーション表示
+            setTimeout(() => notification.classList.add('show'), 100);
+            
+            // 自動削除
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+        
+        // 新規作成
+        function newDocument() {
+            if (!confirm('📝 新規ドキュメントを作成しますか？\n\n現在の内容は消去されます。\n\n✅ OK = 新規作成\n❌ キャンセル = 取り消し')) return;
+            
+            editor.innerHTML = '';
+            editor.setAttribute('data-date', new Date().toLocaleDateString('ja-JP'));
+            editor.classList.add('empty');
+            document.getElementById('filename').value = '学習資料';
+            updateCharCount();
+            showNotification('📄 新規ドキュメントを作成しました');
+        }
+        
+        // ドキュメント保存
+        function saveDocument() {
+            try {
+                const filename = document.getElementById('filename').value.trim() || '学習資料';
+                let content = editor.innerHTML;
+                
+                // 空の場合の処理
+                if (editor.classList.contains('empty') || !content.trim()) {
+                    showNotification('保存する内容がありません', true);
+                    return;
+                }
+                
+                // A4印刷最適化HTML
+                const html = `<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${filename}</title>
+    <style>
+        body {
+            font-family: 'BIZ UDPゴシック', 'Yu Gothic UI', 'Meiryo UI', 'Hiragino Sans', sans-serif;
+            font-size: 14px;
+            line-height: 2.0;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+            color: #333;
+        }
+        ruby {
+            ruby-align: start;
+            ruby-position: over;
+        }
+        ruby rt {
+            font-size: 7px;
+            color: #666;
+            font-weight: normal;
+        }
+        p {
+            margin-bottom: 1em;
+        }
+        h1, h2, h3 {
+            margin-bottom: 0.8em;
+            color: #444;
+        }
+        
+        /* A4印刷最適化 */
+        @media print {
+            body {
+                font-size: 11pt;
+                line-height: 1.8;
+                padding: 20mm 15mm;
+                max-width: none;
+            }
+            ruby rt {
+                font-size: 5.5pt;
+            }
+            p {
+                margin-bottom: 0.8em;
+                page-break-inside: avoid;
+                orphans: 2;
+                widows: 2;
+            }
+            @page {
+                size: A4;
+                margin: 20mm 15mm;
+            }
+        }
+    </style>
+</head>
+<body>
+${content}
+</body>
+</html>`;
+                
+                // ファイルダウンロード
+                const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename + '.html';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                showNotification(`💾 ${filename}.html を保存しました`);
+                updateLastSaved();
+                
+            } catch (error) {
+                showNotification('保存に失敗しました', true);
+            }
+        }
+        
+        // 印刷プレビュー表示
+        function showPrintPreview() {
+            let content = editor.innerHTML;
+            
+            // 空の場合の処理
+            if (editor.classList.contains('empty') || !content.trim()) {
+                showNotification('プレビューする内容がありません', true);
+                return;
+            }
+            
+            // プレビューページに内容を設定
+            document.getElementById('previewPage').innerHTML = content;
+            
+            // モーダル表示
+            document.getElementById('previewModal').classList.add('show');
+            
+            // 背景スクロール無効
+            document.body.style.overflow = 'hidden';
+            
+            showNotification('👀 印刷プレビューを表示しました');
+        }
+        
+        // プレビュー閉じる
+        function closePrintPreview() {
+            document.getElementById('previewModal').classList.remove('show');
+            document.body.style.overflow = 'auto';
+        }
+        
+        // プレビューから印刷
+        function printFromPreview() {
+            const filename = document.getElementById('filename').value.trim() || '学習資料';
+            const content = document.getElementById('previewPage').innerHTML;
+            
+            try {
+                // 印刷用HTML作成
+                const printHTML = `<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>${filename}</title>
+    <style>
+        body {
+            font-family: 'BIZ UDPゴシック', 'Yu Gothic UI', 'Meiryo UI', 'Hiragino Sans', sans-serif;
+            font-size: 11pt;
+            line-height: 1.8;
+            margin: 20mm 15mm;
+            background: white;
+            color: #333;
+        }
+        ruby {
+            ruby-align: start;
+            ruby-position: over;
+        }
+        ruby rt {
+            font-size: 5.5pt;
+            color: #666;
+            font-weight: normal;
+        }
+        p {
+            margin-bottom: 0.8em;
+            page-break-inside: avoid;
+            orphans: 2;
+            widows: 2;
+        }
+        @page {
+            size: A4;
+            margin: 20mm 15mm;
+        }
+        @media print {
+            body { margin: 0; }
+        }
+    </style>
+</head>
+<body>${content}</body>
+</html>`;
+                
+                // Blob作成してプリント
+                const blob = new Blob([printHTML], { type: 'text/html' });
+                const url = URL.createObjectURL(blob);
+                
+                // 新しいウィンドウで開いて印刷
+                const printWindow = window.open(url, '_blank', 'width=800,height=600');
+                
+                if (printWindow) {
+                    printWindow.onload = function() {
+                        setTimeout(() => {
+                            printWindow.print();
+                            closePrintPreview();
+                            showNotification('🖨️ 印刷ダイアログを開きました');
+                        }, 1000);
+                    };
+                } else {
+                    showNotification('ポップアップがブロックされました', true);
+                }
+                
+                setTimeout(() => URL.revokeObjectURL(url), 5000);
+                
+            } catch (error) {
+                showNotification('印刷でエラーが発生しました', true);
+            }
+        }
+        
+        // モーダル外クリックで閉じる
+        document.getElementById('previewModal').addEventListener('click', (e) => {
+            if (e.target.id === 'previewModal') {
+                closePrintPreview();
+            }
+        });
+        
+        // ESCキーでプレビュー閉じる
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closePrintPreview();
+            }
+        });
+        
+        // 印刷機能
+        function printDocument() {
+            const filename = document.getElementById('filename').value.trim() || '学習資料';
+            let content = editor.innerHTML;
+            
+            // 空の場合の処理
+            if (editor.classList.contains('empty') || !content.trim()) {
+                showNotification('印刷する内容がありません', true);
+                return;
+            }
+            
+            // A4印刷用ウィンドウを開く
+            const printWindow = window.open('', 'printWindow', 'width=800,height=600');
+            
+            printWindow.document.write(`
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>${filename}</title>
+    <style>
+        body {
+            font-family: 'BIZ UDPゴシック', 'Yu Gothic UI', 'Meiryo UI', 'Hiragino Sans', sans-serif;
+            font-size: 11pt;
+            line-height: 1.8;
+            margin: 20mm 15mm;
+            background: white;
+            color: #333;
+        }
+        ruby {
+            ruby-align: start;
+            ruby-position: over;
+        }
+        ruby rt {
+            font-size: 5.5pt;
+            color: #666;
+            font-weight: normal;
+        }
+        p {
+            margin-bottom: 0.8em;
+            page-break-inside: avoid;
+            orphans: 2;
+            widows: 2;
+        }
+        h1, h2, h3 {
+            margin-bottom: 0.8em;
+            color: #444;
+            page-break-after: avoid;
+        }
+        
+        @page {
+            size: A4;
+            margin: 20mm 15mm;
+        }
+        
+        @media print {
+            body {
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+${content}
+</body>
+</html>
+            `);
+            
+            printWindow.document.close();
+            
+            // 少し待ってから印刷ダイアログを表示
+            setTimeout(() => {
+                printWindow.print();
+                showNotification('🖨️ A4印刷プレビューを開きました');
+            }, 500);
+        }
+        
+        // クリア機能
+        function clearDocument() {
+            if (!confirm('📝 書いた内容を全て消去しますか？\n\n✅ OK = 消去する\n❌ キャンセル = 消去しない')) return;
+            
+            editor.innerHTML = '';
+            editor.setAttribute('data-date', new Date().toLocaleDateString('ja-JP'));
+            editor.classList.add('empty');
+            updateCharCount();
+            showNotification('🗑️ ドキュメントを消去しました');
+            setTimeout(() => editor.focus(), 100);
+        }
+        
+        // 初期化処理
+        window.addEventListener('load', () => {
+            // 初期フォーカスはしない（プレースホルダー表示のため）
+        });
+        
+        // Ctrl+S で保存
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                e.preventDefault();
+                saveDocument();
+            }
+        });
+    </script>
+</body>
+</html>
